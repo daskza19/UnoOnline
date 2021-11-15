@@ -19,10 +19,10 @@ public class CardBase
     public CardType cardType = CardType.None;
     public int num = 0;
 
-    public CardBase (CardType _type, int num = 0)
+    public CardBase (CardType _type, int _num = 0)
     {
         cardType = _type;
-        num = 0;
+        num = _num;
     }
 
     public virtual void DoAction()
