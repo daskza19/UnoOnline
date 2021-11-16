@@ -9,8 +9,16 @@ public enum CardType
     RedCard,
     BlueCard,
     GreenCard,
+    BlackColorCard,
     BlackSum4Card,
-    BlackColorCard
+    NotFollowingBlue,
+    NotFollowingYellow,
+    NotFollowingGreen,
+    NotFollowingRed,
+    SumBlue,
+    SumYellow,
+    SumGreen,
+    SumRed
 }
 
 [System.Serializable]

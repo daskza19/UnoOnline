@@ -142,8 +142,8 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 68
-    m_FontStyle: 0
+    m_FontSize: 41
+    m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 143
@@ -153,7 +153,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 8
+  m_Text: +2
 --- !u!1 &8490093365568236278
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,11 +164,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1677192250884416413}
   - component: {fileID: 4682214604216593298}
+  - component: {fileID: 426983708925531547}
   - component: {fileID: 5227513113698218556}
   - component: {fileID: 140946007699195059}
-  - component: {fileID: 7333372024065078682}
   m_Layer: 5
-  m_Name: BaseCard
+  m_Name: SumNormalCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -203,6 +203,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8490093365568236278}
   m_CullTransparentMesh: 1
+--- !u!114 &426983708925531547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8490093365568236278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f419d183648a8a3458ba3e316ff538b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardBase:
+    cardType: 0
+    num: 0
+  blueColor: {r: 0.1764706, g: 0.40392157, b: 1, a: 1}
+  redColor: {r: 1, g: 0.2509804, b: 0.2509804, a: 1}
+  yellowColor: {r: 1, g: 0.8235294, b: 0.19215687, a: 1}
+  greenColor: {r: 0.3019608, g: 1, b: 0.21176471, a: 1}
+  blackColor: {r: 0.14117648, g: 0.14117648, b: 0.14117648, a: 1}
+  cardColor: {fileID: 7116723354154593026}
+  numberText: {fileID: 1526513845548174622}
 --- !u!114 &5227513113698218556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,25 +299,3 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &7333372024065078682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8490093365568236278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ba54e60ea76a6d49a93ebdcc30d0a6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cardColor: {fileID: 7116723354154593026}
-  numberText: {fileID: 1526513845548174622}
-  cardBase:
-    cardType: 0
-    num: 0
-  blueColor: {r: 0.1745283, g: 0.40530512, b: 1, a: 1}
-  redColor: {r: 1, g: 0.25, b: 0.25, a: 1}
-  yellowColor: {r: 1, g: 0.82318723, b: 0.19339621, a: 1}
-  greenColor: {r: 0.30202743, g: 1, b: 0.21226418, a: 1}
-  blackColor: {r: 0.14150941, g: 0.14150941, b: 0.14150941, a: 1}
