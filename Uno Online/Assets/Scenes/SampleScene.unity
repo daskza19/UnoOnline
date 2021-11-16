@@ -982,7 +982,6 @@ GameObject:
   - component: {fileID: 978825071}
   - component: {fileID: 978825070}
   - component: {fileID: 978825069}
-  - component: {fileID: 978825072}
   m_Layer: 5
   m_Name: GetNewCardButton
   m_TagString: Untagged
@@ -1053,8 +1052,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 978825072}
-        m_TargetAssemblyTypeName: GetCardButton, Assembly-CSharp
+      - m_Target: {fileID: 1728928103}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: InstantiateNewCard
         m_Mode: 1
         m_Arguments:
@@ -1103,20 +1102,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 978825067}
   m_CullTransparentMesh: 1
---- !u!114 &978825072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 978825067}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90806b5dd5635a5429efc11120d66eb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerDeck: {fileID: 267175658}
-  cardPrefab: {fileID: 8490093365568236278, guid: 428d31c38c8ac6f42bba182b7cb7eb4b, type: 3}
 --- !u!1 &1027611522
 GameObject:
   m_ObjectHideFlags: 0
@@ -2008,6 +1993,12 @@ MonoBehaviour:
   - {fileID: 1543993261055003274, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
   - {fileID: 2796422088385844095, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
   - {fileID: -7691505324266952256, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
+  playerDeck: {fileID: 267175658}
+  basicCard: {fileID: 8490093365568236278, guid: 92bf0f4b527ad1541abdfcb515c59605, type: 3}
+  basicCardSum: {fileID: 8490093365568236278, guid: 308b918f9437f4e4a9be319ed8754350, type: 3}
+  blackCard: {fileID: 8490093365568236278, guid: 428d31c38c8ac6f42bba182b7cb7eb4b, type: 3}
+  blackCardSum: {fileID: 8490093365568236278, guid: 9c5acc45a3c2d6f46a2d186ed708f82d, type: 3}
+  notFollowingCard: {fileID: 8490093365568236278, guid: e945c9a9f68a1384bae98946c6d6fa6a, type: 3}
 --- !u!114 &1968336100 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5285007236929533521, guid: 1003b06bbb62a3f45bc39003c9a38b81, type: 3}
