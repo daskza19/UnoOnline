@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
     public List<PlayerUI> playerUIs;
     public List<Sprite> fotosPerfil;
     public GameObject playerDeck;
+    public MainManager mainManager;
 
     [Header("Cards prefabs")]
     public GameObject basicCard;
@@ -19,6 +20,7 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        mainManager = GetComponent<MainManager>();
         playerUIs[0].imagenPerfil.sprite = fotosPerfil[2];
         playerUIs[1].imagenPerfil.sprite = fotosPerfil[3];
         playerUIs[2].imagenPerfil.sprite = fotosPerfil[4];

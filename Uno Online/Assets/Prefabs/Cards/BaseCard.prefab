@@ -218,6 +218,9 @@ MonoBehaviour:
   cardBase:
     cardType: 0
     num: 0
+    card_id: 0
+  mManager: {fileID: 0}
+  middlePosition: {fileID: 0}
   blueColor: {r: 0.1764706, g: 0.40392157, b: 1, a: 1}
   redColor: {r: 1, g: 0.2509804, b: 0.2509804, a: 1}
   yellowColor: {r: 1, g: 0.8235294, b: 0.19215687, a: 1}
@@ -298,4 +301,16 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5227513113698218556}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6433776970670516582}
+        m_TargetAssemblyTypeName: CardUI, Assembly-CSharp
+        m_MethodName: PutNewCardOnMiddle
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
