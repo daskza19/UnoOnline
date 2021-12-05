@@ -13,6 +13,7 @@ public class MainManager : MonoBehaviour
     public string serverPassword = "0";
 
     [Header("Players Properties")]
+    public TeamsManager teamsManager;
     public UserBase user;
     public List<UserBase> userList;
 
@@ -27,6 +28,9 @@ public class MainManager : MonoBehaviour
     public IPEndPoint ipep;
     public EndPoint sendEnp;
     private Thread receiveThread;
+
+    private bool wannaUpdateInfo = false;
+    public int whatToDo = 1000;
 
     private void Awake()
     {
@@ -52,7 +56,23 @@ public class MainManager : MonoBehaviour
     {
         while (true)
         {
-            serializeManager.ReceiveData(true);
+            whatToDo = serializeManager.ReceiveData(true);
+            wannaUpdateInfo = true;
+            Debug.Log("RECEIVED NEW INFOOOOOOOOOOOOOOOOO");
+        }
+    }
+
+    private void Update()
+    {
+        if (wannaUpdateInfo)
+        {
+            switch (whatToDo)
+            {
+                case (2): //The server sent a list of users
+                    if (teamsManager != null) teamsManager.UpdateUsersTeams();
+                    break;
+            }
+            wannaUpdateInfo = false;
         }
     }
 
@@ -67,6 +87,12 @@ public class MainManager : MonoBehaviour
         }
         Debug.Log("No card found with this id: " + _id.ToString());
         return null;
+    }
+
+    private void OnApplicationQuit()
+    {
+        Debug.Log("Client Desconnected");
+        serializeManager.SendData(6, true);
     }
 
     private void OnDestroy()

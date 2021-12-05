@@ -454,6 +454,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   host: 1818
   serverPassword: 0
+  teamsManager: {fileID: 2130815257}
   user:
     userName: 
     userNumber: 0
@@ -464,6 +465,7 @@ MonoBehaviour:
   gameTurn: 0
   isClock: 1
   cardListGO: []
+  whatToDo: 1000
 --- !u!224 &275919045 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7881747202408640341, guid: f7aa73a150489fc489d3878d4f078ffd, type: 3}
@@ -3611,11 +3613,19 @@ MonoBehaviour:
   - {fileID: 245895514802789522, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
   - {fileID: 3961961893956337064, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
   - {fileID: -6084563200843811663, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
+  spritesNumeros:
+  - {fileID: 34444032718003712, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
+  - {fileID: 1543993261055003274, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
+  - {fileID: 2796422088385844095, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
+  - {fileID: 5427448470303778207, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
   mainManager: {fileID: 262466034}
   serializeManager: {fileID: 262466033}
   animator: {fileID: 957579730}
   nameInput: {fileID: 623535257}
   passwordInput: {fileID: 485470254}
+  userPrefab: {fileID: 977705991609847816, guid: c780d9f729158414faf7ea434846191d, type: 3}
+  blueTeamScroll: {fileID: 152222931}
+  redTeamScroll: {fileID: 414746105}
 --- !u!4 &2130815258
 Transform:
   m_ObjectHideFlags: 0

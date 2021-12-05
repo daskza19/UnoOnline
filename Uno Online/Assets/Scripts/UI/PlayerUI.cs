@@ -7,5 +7,6 @@ public class PlayerUI : MonoBehaviour
 {
     public Image imagenPerfil;
     public Image colorUsuario;
-
+    public Text UserName;
+    public Image PlayerNumber;
 }

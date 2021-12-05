@@ -7,12 +7,16 @@ public class TeamsManager : MonoBehaviour
 {
     public List<ImagenPerfilController> imagenesPerfil;
     public List<Sprite> spritesPerfil;
+    public List<Sprite> spritesNumeros;
     public MainManager mainManager;
     public SerializeManager serializeManager;
     public Animator animator;
 
     public InputField nameInput;
     public InputField passwordInput;
+    public GameObject userPrefab;
+    public GameObject blueTeamScroll;
+    public GameObject redTeamScroll;
 
     private void Start()
     {
@@ -33,8 +37,33 @@ public class TeamsManager : MonoBehaviour
         else
         {
             mainManager.user.userName = nameInput.text;
-            //serializeManager.SendData(1, false, mainManager.user);
+            mainManager.user.userStatus = UserStatus.Connected;
+            serializeManager.SendData(1, true, mainManager.user);
             animator.SetTrigger("OutPanel");
+        }
+    }
+
+    public void UpdateUsersTeams()
+    {
+        mainManager.user.userNumber = mainManager.userList.Count;
+        Debug.Log("UpdateUsers");
+        for(int i = 0; i < mainManager.userList.Count; i++)
+        {
+            GameObject newGO = new GameObject();
+            if (mainManager.userList[i].userNumber==1 || mainManager.userList[i].userNumber == 3)
+            {
+                newGO = Instantiate(userPrefab, new Vector3(0, 0, 0), Quaternion.identity, blueTeamScroll.transform);
+            }
+            else if (mainManager.userList[i].userNumber == 2 || mainManager.userList[i].userNumber == 4)
+            {
+                newGO = Instantiate(userPrefab, new Vector3(0, 0, 0), Quaternion.identity, redTeamScroll.transform);
+            }
+            newGO.GetComponent<PlayerUI>().UserName.text = mainManager.userList[i].userName;
+            newGO.GetComponent<PlayerUI>().imagenPerfil.sprite = spritesPerfil[mainManager.userList[i].userImage];
+            if (mainManager.userList[i].userNumber == 1) newGO.GetComponent<PlayerUI>().PlayerNumber.sprite = spritesNumeros[0];
+            if (mainManager.userList[i].userNumber == 2) newGO.GetComponent<PlayerUI>().PlayerNumber.sprite = spritesNumeros[1];
+            if (mainManager.userList[i].userNumber == 3) newGO.GetComponent<PlayerUI>().PlayerNumber.sprite = spritesNumeros[2];
+            if (mainManager.userList[i].userNumber == 4) newGO.GetComponent<PlayerUI>().PlayerNumber.sprite = spritesNumeros[3];
         }
     }
 }
