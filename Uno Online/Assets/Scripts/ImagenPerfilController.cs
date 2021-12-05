@@ -6,9 +6,7 @@ using UnityEngine.UI;
 public class ImagenPerfilController : MonoBehaviour
 {
     public GameObject selectedImage;
-    public List<Sprite> selectedSprites;
     public bool isSelected = false;
-    public int playerSelected;
     public TeamsManager teamsManager;
 
     public void SetImagePerfil()
@@ -20,26 +18,18 @@ public class ImagenPerfilController : MonoBehaviour
         {
             if(teamsManager.imagenesPerfil[i].isSelected == true)
             {
-                if(teamsManager.imagenesPerfil[i].playerSelected == teamsManager.actualUserNumber)
-                {
-                    teamsManager.imagenesPerfil[i].DeselectImage();
-                }
+                teamsManager.imagenesPerfil[i].DeselectImage();
             }
         }
 
         selectedImage.SetActive(true);
-        selectedImage.GetComponent<Image>().sprite = selectedSprites[teamsManager.actualUserNumber];
-        playerSelected = teamsManager.actualUserNumber;
         isSelected = true;
 
         for (int i = 0; i < teamsManager.imagenesPerfil.Count; i++)
         {
             if (teamsManager.imagenesPerfil[i].isSelected == true)
             {
-                if (teamsManager.imagenesPerfil[i].playerSelected == teamsManager.actualUserNumber)
-                {
-                    teamsManager.indexImage = i;
-                }
+                teamsManager.mainManager.user.userImage = i;
             }
         }
     }
@@ -51,6 +41,5 @@ public class ImagenPerfilController : MonoBehaviour
 
         selectedImage.SetActive(false);
         isSelected = false;
-        playerSelected = 0;
     }
 }
