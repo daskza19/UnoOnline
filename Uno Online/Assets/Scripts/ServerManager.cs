@@ -31,6 +31,7 @@ public class ServerManager : MonoBehaviour
     public IPEndPoint ipep;
     public EndPoint sendEnp;
     public Thread mainThread;
+    public Thread checkThread;
 
     private bool wannaUpdateInfo = false;
     public int whatToDo = 1000;
@@ -53,11 +54,13 @@ public class ServerManager : MonoBehaviour
 
         mainThread = new Thread(ReceiveUsersLoop);
         mainThread.Start();
+        checkThread = new Thread(CheckUsersLoop);
+        checkThread.Start();
     }
 
     private void ReceiveUsersLoop()
     {
-        while (userList.Count < 4)
+        while (userList.Count < 4 && !CheckAllUsersState(UserStatus.Connected))
         {
             whatToDo = serializeManager.ReceiveData(false);
             wannaUpdateInfo = true;
@@ -65,6 +68,35 @@ public class ServerManager : MonoBehaviour
         isInGame = true;
         Debug.Log("All players DONE!");
         serializeManager.SendData(4, false); //Send to the other players that the match is going to start (to change their scenes)
+    }
+
+    private void CheckUsersLoop()
+    {
+        //while (true)
+        //{
+        //    serializeManager.SendData(7, false);
+        //
+        //    Thread.Sleep(5);
+        //
+        //    whatToDo = serializeManager.ReceiveData(false);
+        //    wannaUpdateInfo = true;
+        //}
+    }
+
+    public bool CheckAllUsersState(UserStatus _status)
+    {
+        if (userList.Count != 4)
+            return false;
+
+        int count = 0;
+        for(int i = 0; i < 4; i++)
+        {
+            if (userList[i].userStatus == _status) count++;
+        }
+
+        if (count == 4) return true;
+
+        return false;
     }
 
     private void Update()
@@ -76,10 +108,10 @@ public class ServerManager : MonoBehaviour
                 case (1): //Received a single User
                     UpdateUserUI();
                     break;
-                case (5): //Received a single User
+                case (2): //Received a new User List
                     UpdateUserUI();
                     break;
-                case (6): //Received a single User
+                case (5): //Received a single User
                     UpdateUserUI();
                     break;
             }
@@ -91,7 +123,7 @@ public class ServerManager : MonoBehaviour
     {
         for(int i = 0; i < userList.Count; i++)
         {
-            if (userList[i] == null)
+            if (userList[i].userStatus == UserStatus.Disconnected)
             {
                 PutOneUserDisconnected(i);
                 return;
@@ -136,7 +168,7 @@ public class ServerManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        Debug.Log("HOLAAAAAAAAAAAAAAAAAAAAAAA");
+        Debug.Log("Server Disconnected, all the clients will quit the application");
     }
 
     private void OnDestroy()

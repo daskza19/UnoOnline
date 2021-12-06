@@ -17,6 +17,7 @@ public class TeamsManager : MonoBehaviour
     public GameObject userPrefab;
     public GameObject blueTeamScroll;
     public GameObject redTeamScroll;
+    private List<GameObject> userPanels = new List<GameObject>();
 
     private void Start()
     {
@@ -47,8 +48,19 @@ public class TeamsManager : MonoBehaviour
     {
         mainManager.user.userNumber = mainManager.userList.Count;
         Debug.Log("UpdateUsers");
-        for(int i = 0; i < mainManager.userList.Count; i++)
+
+        for (int j = 0; j < userPanels.Count; j++)
         {
+            Destroy(userPanels[j]);
+        }
+
+        userPanels.Clear();
+
+        for (int i = 0; i < mainManager.userList.Count; i++)
+        {
+            if (mainManager.userList[i].userName == "")
+                return;
+
             GameObject newGO = new GameObject();
             if (mainManager.userList[i].userNumber==1 || mainManager.userList[i].userNumber == 3)
             {
@@ -64,6 +76,8 @@ public class TeamsManager : MonoBehaviour
             if (mainManager.userList[i].userNumber == 2) newGO.GetComponent<PlayerUI>().PlayerNumber.sprite = spritesNumeros[1];
             if (mainManager.userList[i].userNumber == 3) newGO.GetComponent<PlayerUI>().PlayerNumber.sprite = spritesNumeros[2];
             if (mainManager.userList[i].userNumber == 4) newGO.GetComponent<PlayerUI>().PlayerNumber.sprite = spritesNumeros[3];
+
+            userPanels.Add(newGO);
         }
     }
 }

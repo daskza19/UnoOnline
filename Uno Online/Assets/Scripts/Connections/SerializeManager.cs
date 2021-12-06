@@ -78,22 +78,23 @@ public class SerializeManager : MonoBehaviour
         if (_isVerify)
         {
             writer.Write(4);
-            writer.Write(false);
+            writer.Write(true);
+            writer.Write(_userToSend.userNumber);
         }
         else
         {
             writer.Write(5);
-            writer.Write(true);
-            writer.Write(_userToSend.userNumber);
+            writer.Write(false);
         }
     }
-    public void SerializeDesconnectedUser(int _playerNumber)
+    public void SerializeUserStatus(UserBase _user)
     {
         newStream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(newStream);
 
-        writer.Write(6);
-        writer.Write(_playerNumber);
+        writer.Write(5);
+        writer.Write(_user.userNumber);
+        writer.Write((int)_user.userStatus);
     }
     #endregion
 
@@ -125,13 +126,15 @@ public class SerializeManager : MonoBehaviour
                 DeserializePassword(reader, isClient);
                 break;
             case (4):
-                DeserializeGoingToStart(reader, isClient);
+                //The server sent to all the users that are ready and they have to change the scene
+                DeserializeGoingToStartMatch(reader);
                 break;
             case (5):
-                DeserializeGoingToStart(reader, isClient);
+                //The client sent that his status changed (sent their player number and the new status)
+                DeserializePlayerStatus(reader, isClient);
                 break;
             case (6):
-                DeserializeUserDisconnected(reader, isClient);
+                
                 break;
         }
         return whatis;
@@ -161,28 +164,16 @@ public class SerializeManager : MonoBehaviour
 
         if(_isClient == false)
         {
-            if (serverManager.userList.Count >= 1 && serverManager.userList[0] == null)
+            int position = CheckForTheFirstUserNull();
+            if (position == 5) //That's the first user connected
             {
-                Debug.Log("User added to the first position and have the number 1");
-                _newUser.userNumber = 1;
-                serverManager.userList[0] = _newUser;
+                _newUser.userNumber = serverManager.userList.Count + 1;
+                serverManager.userList.Add(_newUser);
             }
-            else if (serverManager.userList.Count >= 2 && serverManager.userList[1] == null)
+            else
             {
-                Debug.Log("User added to the second position and have the number 2");
-                _newUser.userNumber = 2;
-                serverManager.userList[1] = _newUser;
-            }
-            else if (serverManager.userList.Count >= 3 && serverManager.userList[2] == null)
-            {
-                Debug.Log("User added to the third position and have the number 3");
-                _newUser.userNumber = 3;
-                serverManager.userList[2] = _newUser;
-            }
-            else {
-                Debug.Log("User added to the last  position and have the number 4");
-                _newUser.userNumber = 1;
-                serverManager.userList[0] = _newUser;
+                _newUser.userNumber = position + 1;
+                serverManager.userList[position] = _newUser;
             }
             Debug.Log("ReceivedNewUser, To Send the list");
             SendData(2, false);
@@ -238,32 +229,41 @@ public class SerializeManager : MonoBehaviour
         newStream.Flush();
         newStream.Close();
     }
-    private void DeserializeGoingToStart(BinaryReader _reader, bool _isClient)
+    private void DeserializeGoingToStartMatch(BinaryReader _reader)
     {
         //TODO: Do the code to change the scene, at the start of the other scene, all the clients will send a verification that they are ready
-        bool isVerifing = _reader.ReadBoolean();
-        int whoIs = _reader.ReadInt32();
-
-        if (isVerifing == true && _isClient == false)
-        {
-            serverManager.userList[whoIs - 1].userStatus = UserStatus.Ready;
-        }
+        Debug.Log("Change the scene to start the match!");
 
         newStream.Flush();
         newStream.Close();
     }
-    private void DeserializeUserDisconnected(BinaryReader _reader, bool _isClient)
+    private void DeserializePlayerStatus(BinaryReader _reader, bool _isClient)
     {
-        int whoIs = _reader.ReadInt32();
+        int whichPlayer = _reader.ReadInt32();
+        UserStatus _status = (UserStatus)_reader.ReadInt32();
 
-        if (_isClient)
+        if (_status == UserStatus.Disconnected)
         {
-            clientManager.userList[whoIs - 1] = null;
+            if (_isClient)
+            {
+                clientManager.userList[whichPlayer - 1] = new UserBase("", 0, 15);
+            }
+            else
+            {
+                serverManager.userList[whichPlayer - 1] = new UserBase("", 0, 15);
+                SendData(2, false);
+            }
         }
         else
         {
-            serverManager.userList[whoIs-1] = null;
-            SendData(6, false, null, whoIs);
+            if (_isClient)
+            {
+                clientManager.userList[whichPlayer - 1].userStatus = _status;
+            }
+            else
+            {
+                serverManager.userList[whichPlayer - 1].userStatus = _status;
+            }
         }
 
         newStream.Flush();
@@ -298,7 +298,7 @@ public class SerializeManager : MonoBehaviour
 
         return whatis;
     }
-    public void SendData(int _what, bool _isClient, UserBase _userToSend = null, int _playerNumber=1)
+    public void SendData(int _what, bool _isClient, UserBase _userToSend = null)
     {
         switch (_what)
         {
@@ -319,10 +319,7 @@ public class SerializeManager : MonoBehaviour
                 SerializeStartMatch(false);
                 break;
             case (5):
-                SerializeStartMatch(true, _userToSend);
-                break;
-            case (6):
-                SerializeDesconnectedUser(_playerNumber);
+                SerializeUserStatus(_userToSend);
                 break;
         }
 
@@ -337,4 +334,18 @@ public class SerializeManager : MonoBehaviour
         Debug.Log("Sent DATA");
     }
     #endregion
+
+    private int CheckForTheFirstUserNull()
+    {
+        if (serverManager.userList.Count == 0)
+            return 5;
+        for(int i = 0; i < serverManager.userList.Count; i++)
+        {
+            if (serverManager.userList[i].userStatus == UserStatus.Disconnected)
+            {
+                return i;
+            }
+        }
+        return 5;
+    }
 }

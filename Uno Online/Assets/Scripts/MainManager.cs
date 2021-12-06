@@ -91,8 +91,9 @@ public class MainManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        user.userStatus = UserStatus.Disconnected;
+        serializeManager.SendData(5, true, user);
         Debug.Log("Client Desconnected");
-        serializeManager.SendData(6, true);
     }
 
     private void OnDestroy()
