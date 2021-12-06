@@ -86,6 +86,24 @@ public class SerializeManager : MonoBehaviour
         writer.Write(_user.userNumber);
         writer.Write((int)_user.userStatus);
     }
+    public void SerializeUserAskForCard(int _userNumber)
+    {
+        newStream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(newStream);
+
+        writer.Write(10);
+        writer.Write(_userNumber);
+    }
+    public void SerializeNewCardForAUser(UserBase _user)
+    {
+        newStream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(newStream);
+
+        writer.Write(11);
+        writer.Write(_user.userNumber);
+        writer.Write((int)_user.cardList[_user.cardList.Count-1].cardType);
+        writer.Write(_user.cardList[_user.cardList.Count - 1].num);
+    }
     #endregion
 
     #region Deserialize
@@ -123,8 +141,13 @@ public class SerializeManager : MonoBehaviour
                 //The client sent that his status changed (sent their player number and the new status)
                 DeserializePlayerStatus(reader, isClient);
                 break;
-            case (6):
-                
+            case (10):
+                //The server gets the petition to send a random card to a user
+                DeserializePlayerAskForCard(reader, isClient);
+                break;
+            case (11):
+                //The client gets the new card (when a player have to get a card of the middle)
+                DeserializeNewCardToOnePlayer(reader, isClient);
                 break;
         }
         return whatis;
@@ -259,6 +282,37 @@ public class SerializeManager : MonoBehaviour
         newStream.Flush();
         newStream.Close();
     }
+    private void DeserializePlayerAskForCard(BinaryReader _reader, bool _isClient)
+    {
+        int whichPlayer = _reader.ReadInt32();
+
+        serverManager.CreateNewRandomCard(whichPlayer);
+        SendData(11, false, serverManager.userList[whichPlayer-1]); //Send the new card to the users
+
+        newStream.Flush();
+        newStream.Close();
+    }
+    private void DeserializeNewCardToOnePlayer(BinaryReader _reader, bool _isClient)
+    {
+        int whichPlayer = _reader.ReadInt32();
+
+        if (_isClient)
+        {
+            CardBase _newCard = new CardBase(CardType.None, 0);
+            _newCard.cardType = (CardType)_reader.ReadInt32();
+            _newCard.num = _reader.ReadInt32();
+
+            clientManager.userList[whichPlayer - 1].cardList.Add(_newCard);
+            clientManager.uiManager.InstantiateNewCard(_newCard, whichPlayer);
+        }
+        else
+        {
+            Debug.Log("The server received a user card, in theory thats not possible :o");
+        }
+
+        newStream.Flush();
+        newStream.Close();
+    }
     #endregion
 
     #region SendAndReceive
@@ -310,6 +364,12 @@ public class SerializeManager : MonoBehaviour
                 break;
             case (5):
                 SerializeUserStatus(_userToSend);
+                break;
+            case (10):
+                SerializeUserAskForCard(_userToSend.userNumber);
+                break;
+            case (11):
+                SerializeNewCardForAUser(_userToSend);
                 break;
         }
 

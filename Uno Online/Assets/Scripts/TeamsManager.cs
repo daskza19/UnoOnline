@@ -5,18 +5,23 @@ using UnityEngine.UI;
 
 public class TeamsManager : MonoBehaviour
 {
+    [Header("Images to put")]
     public List<ImagenPerfilController> imagenesPerfil;
     public List<Sprite> spritesPerfil;
     public List<Sprite> spritesNumeros;
+
+    [Header("Managers")]
     public MainManager mainManager;
     public SerializeManager serializeManager;
     public Animator animator;
 
+    [Header("UI Things")]
     public InputField nameInput;
     public InputField passwordInput;
     public GameObject userPrefab;
     public GameObject blueTeamScroll;
     public GameObject redTeamScroll;
+
     private List<GameObject> userPanels = new List<GameObject>();
 
     private void Start()

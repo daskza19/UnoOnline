@@ -10,4 +10,5 @@ public class PlayerUI : MonoBehaviour
     public Image colorUsuario;
     public Text UserName;
     public Image PlayerNumber;
+    public GameObject cardScroll;
 }

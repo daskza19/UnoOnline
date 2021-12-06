@@ -26,7 +26,7 @@ public class MainManager : MonoBehaviour
     public List<GameObject> cardListGO;
 
     private static MainManager managerInstance;
-    private SerializeManager serializeManager;
+    public SerializeManager serializeManager;
     public Socket newSocket;
     public IPEndPoint ipep;
     public EndPoint sendEnp;
@@ -85,7 +85,6 @@ public class MainManager : MonoBehaviour
         while (true)
         {
             whatToDo = serializeManager.ReceiveData(true);
-            if (whatToDo == 4) Thread.Sleep(200);
             wannaUpdateInfo = true;
         }
     }
@@ -119,18 +118,27 @@ public class MainManager : MonoBehaviour
         }
     }
 
-    public GameObject GetCardWithID(int _id)
+    public GameObject GetCardWithID(int _index)
     {
-        for(int i = 0; i < cardListGO.Count; i++)
+        if (cardListGO[_index] != null)
         {
-            if(cardListGO[i].GetComponent<CardUI>().cardBase.card_id == _id)
-            {
-                return cardListGO[i];
-            }
+            return cardListGO[_index];
         }
-        Debug.Log("No card found with this id: " + _id.ToString());
         return null;
     }
+
+    #region GameplayFunctions
+    public void SendToServerGetCard()
+    {
+        Debug.Log("Send to server the petition to get a new card!");
+        serializeManager.SendData(10, true, user);
+    }
+    public void SendToServerPutCardInMiddle()
+    {
+
+    }
+    #endregion
+
 
     #region ExitApplication
     private void OnApplicationQuit()
