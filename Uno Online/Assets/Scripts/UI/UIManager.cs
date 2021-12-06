@@ -6,6 +6,7 @@ public class UIManager : MonoBehaviour
 {
     public List<PlayerUI> playerUIs;
     public List<Sprite> fotosPerfil;
+    public List<Sprite> numbersPlayers;
     public GameObject playerDeck;
     public MainManager mainManager;
 
@@ -16,15 +17,40 @@ public class UIManager : MonoBehaviour
     public GameObject blackCardSum;
     public GameObject notFollowingCard;
 
+    [Header("Team Colors")]
+    public Color firstTeam;
+    public Color SecondTeam;
 
     // Start is called before the first frame update
     void Start()
     {
-        mainManager = GetComponent<MainManager>();
-        playerUIs[0].imagenPerfil.sprite = fotosPerfil[2];
-        playerUIs[1].imagenPerfil.sprite = fotosPerfil[3];
-        playerUIs[2].imagenPerfil.sprite = fotosPerfil[4];
-        playerUIs[3].imagenPerfil.sprite = fotosPerfil[14];
+        mainManager = GameObject.Find("MainManager").GetComponent<MainManager>();
+        SetUsersToBoard();
+    }
+
+    private void SetUsersToBoard()
+    {
+        int numberPlayer = mainManager.user.userNumber;
+        for (int i = 0; i < 4; i++)
+        {
+            playerUIs[i].user = mainManager.userList[numberPlayer - 1];
+            playerUIs[i].imagenPerfil.sprite = fotosPerfil[playerUIs[i].user.userImage];
+            if (playerUIs[i].user.userNumber == 1 || playerUIs[i].user.userNumber == 3)
+            {
+                playerUIs[i].colorUsuario.color = firstTeam;
+            }
+            else
+            {
+                playerUIs[i].colorUsuario.color = SecondTeam;
+            }
+            if (playerUIs[i].user.userNumber == 1) playerUIs[i].PlayerNumber.sprite = numbersPlayers[0];
+            else if (playerUIs[i].user.userNumber == 2) playerUIs[i].PlayerNumber.sprite = numbersPlayers[1];
+            else if (playerUIs[i].user.userNumber == 3) playerUIs[i].PlayerNumber.sprite = numbersPlayers[2];
+            else playerUIs[i].PlayerNumber.sprite = numbersPlayers[3];
+
+            numberPlayer++;
+            if (numberPlayer > 4) numberPlayer = 1;
+        }
     }
 
     public void InstantiateNewCard()

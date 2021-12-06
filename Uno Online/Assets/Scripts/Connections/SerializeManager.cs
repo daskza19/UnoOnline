@@ -70,22 +70,12 @@ public class SerializeManager : MonoBehaviour
         writer.Write(3);
         writer.Write(_password);
     }
-    public void SerializeStartMatch(bool _isVerify, UserBase _userToSend = null)
+    public void SerializeStartMatch()
     {
         newStream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(newStream);
 
-        if (_isVerify)
-        {
-            writer.Write(4);
-            writer.Write(true);
-            writer.Write(_userToSend.userNumber);
-        }
-        else
-        {
-            writer.Write(5);
-            writer.Write(false);
-        }
+        writer.Write(4);
     }
     public void SerializeUserStatus(UserBase _user)
     {
@@ -316,7 +306,7 @@ public class SerializeManager : MonoBehaviour
                 SerializePassword(serverManager.password);
                 break;
             case (4):
-                SerializeStartMatch(false);
+                SerializeStartMatch();
                 break;
             case (5):
                 SerializeUserStatus(_userToSend);

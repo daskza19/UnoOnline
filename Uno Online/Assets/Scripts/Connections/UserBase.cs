@@ -19,12 +19,12 @@ public class UserBase
     public int userImage = 0;
     public List<CardBase> cardList;
     public UserStatus userStatus;
-    public UserBase(string _name, int _num, int _image)
+    public UserBase(string _name, int _num, int _image, UserStatus _status = UserStatus.Disconnected)
     {
         userName = _name;
         userImage = _image;
         userNumber = _num;
-        userStatus = UserStatus.Disconnected;
+        userStatus = _status;
         cardList = new List<CardBase>();
     }
 }

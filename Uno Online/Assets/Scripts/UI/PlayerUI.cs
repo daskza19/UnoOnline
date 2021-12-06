@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour
 {
+    public UserBase user;
     public Image imagenPerfil;
     public Image colorUsuario;
     public Text UserName;
