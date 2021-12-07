@@ -230,6 +230,7 @@ public class ServerManager : MonoBehaviour
     {
         for(int i = 0; i < userList.Count; i++)
         {
+            if(userList[i]!=null) playerProperties[i].user = userList[i];
             if (userList[i].userStatus == UserStatus.Disconnected)
             {
                 PutOneUserDisconnected(i);
@@ -261,6 +262,7 @@ public class ServerManager : MonoBehaviour
                     playerProperties[i].userStatus.color = Color.green;
                     break;
             }
+            playerProperties[i].InstantiateNewCard();
         }
     }
     public void UpdateGameUI()

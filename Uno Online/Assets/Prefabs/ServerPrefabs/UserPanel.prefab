@@ -550,6 +550,12 @@ MonoBehaviour:
   numberofCards: {fileID: 8085083359222525975}
   otherInfo: {fileID: 8667067339305291059}
   cardsPanel: {fileID: 4569152173715074401}
+  cardsGOList: []
+  basicCard: {fileID: 8490093365568236278, guid: 92bf0f4b527ad1541abdfcb515c59605, type: 3}
+  basicCardSum: {fileID: 8490093365568236278, guid: 308b918f9437f4e4a9be319ed8754350, type: 3}
+  blackCard: {fileID: 8490093365568236278, guid: 428d31c38c8ac6f42bba182b7cb7eb4b, type: 3}
+  blackCardSum: {fileID: 8490093365568236278, guid: 9c5acc45a3c2d6f46a2d186ed708f82d, type: 3}
+  notFollowingCard: {fileID: 8490093365568236278, guid: e945c9a9f68a1384bae98946c6d6fa6a, type: 3}
 --- !u!222 &8085083360762553787
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -670,14 +676,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8085083360762553785}
     m_Modifications:
-    - target: {fileID: 7023265846617398016, guid: 1dfd492f3cd2a3d4ebcbcc65ce774523, type: 3}
-      propertyPath: m_VerticalFit
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7023265846617398016, guid: 1dfd492f3cd2a3d4ebcbcc65ce774523, type: 3}
-      propertyPath: m_HorizontalFit
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7023265846617398020, guid: 1dfd492f3cd2a3d4ebcbcc65ce774523, type: 3}
       propertyPath: m_SizeDelta.x
       value: 75
