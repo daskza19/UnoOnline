@@ -5,12 +5,13 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public GameObject middlePosition;
     public Animator turnAnimator;
     public List<PlayerUI> playerUIs;
     public List<Sprite> fotosPerfil;
     public List<Sprite> numbersPlayers;
-    public GameObject playerDeck;
     public MainManager mainManager;
+    public GameObject panelToChooseColors;
 
     [Header("Cards prefabs")]
     public GameObject basicCard;
@@ -30,6 +31,7 @@ public class UIManager : MonoBehaviour
     public bool wannaUpdateCardsOfOnePlayer = false;
     private int whichPlayer = 0;
     public List<int> positions = new List<int>();
+    private int indexCardToSendMiddle = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -71,13 +73,22 @@ public class UIManager : MonoBehaviour
             mainManager.serializeManager.SendData(10, true, mainManager.user);
         }
     }
-    public void SendToServerPutCardInMiddle(int indexCard)
+    public void CheckIfCardWithIndexIsValidAndSend(int indexCard)
     {
         //TODO: Check if the card is valid card
         if (mainManager.user.userStatus == UserStatus.InTurn)
         {
-            Debug.Log("Send to server the petition to put one card in the middle");
-            mainManager.serializeManager.SendData(13, true, mainManager.user, indexCard);
+            indexCardToSendMiddle = indexCard;
+            if (playerUIs[0].user.cardList[indexCard].cardType != CardType.BlackColorCard && playerUIs[0].user.cardList[indexCard].cardType != CardType.BlackSum4Card)
+            {
+                Debug.Log("Send to server the petition to put one card in the middle");
+                ActualiceNumberAndColor(indexCard);
+                SendToServerPutCardInMiddle();
+            }
+            else
+            {
+                panelToChooseColors.SetActive(true);
+            }
         }
     }
     #endregion
@@ -105,6 +116,58 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Utilities
+    private GameObject InstantiateCard(CardBase _card, GameObject where)
+    {
+        GameObject newCard;
+
+        if (_card.cardType == CardType.BlackColorCard)
+        {
+            newCard = Instantiate(blackCard, new Vector3(0, 0, 0), Quaternion.identity, where.transform);
+            middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Add(newCard);
+            newCard.GetComponent<BasicBlackCardUI>().SetCardUI(_card, 0);
+            newCard.GetComponent<Button>().interactable = false;
+        }
+        else if (_card.cardType == CardType.BlackSum4Card)
+        {
+            newCard = Instantiate(blackCardSum, new Vector3(0, 0, 0), Quaternion.identity, where.transform);
+            middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Add(newCard);
+            newCard.GetComponent<SumBlackCardUI>().SetCardUI(_card, 0);
+            newCard.GetComponent<Button>().interactable = false;
+        }
+        else if (_card.cardType == CardType.NotFollowingBlue ||
+            _card.cardType == CardType.NotFollowingGreen ||
+            _card.cardType == CardType.NotFollowingRed ||
+            _card.cardType == CardType.NotFollowingYellow)
+        {
+            newCard = Instantiate(notFollowingCard, new Vector3(0, 0, 0), Quaternion.identity, where.transform);
+            middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Add(newCard);
+            newCard.GetComponent<NotFollowingCardUI>().SetCardUI(_card, 0);
+            newCard.GetComponent<Button>().interactable = false;
+        }
+        else if (_card.cardType == CardType.SumBlue ||
+            _card.cardType == CardType.SumGreen ||
+            _card.cardType == CardType.SumRed ||
+            _card.cardType == CardType.SumYellow)
+        {
+            newCard = Instantiate(basicCardSum, new Vector3(0, 0, 0), Quaternion.identity, where.transform);
+            middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Add(newCard);
+            newCard.GetComponent<SumNormalCardUI>().SetCardUI(_card, 0);
+            newCard.GetComponent<Button>().interactable = false;
+        }
+        else
+        {
+            newCard = Instantiate(basicCard, new Vector3(0, 0, 0), Quaternion.identity, where.transform);
+            middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Add(newCard);
+            newCard.GetComponent<NormalCardUI>().SetCardUI(_card, 0);
+            newCard.GetComponent<Button>().interactable = false;
+        }
+
+        return newCard;
+    }
+    public void SendToServerPutCardInMiddle()
+    {
+        mainManager.serializeManager.SendData(13, true, mainManager.user, indexCardToSendMiddle);
+    }
     private void SetUsersToBoard()
     {
         int numberPlayer = mainManager.user.userNumber;
@@ -285,16 +348,22 @@ public class UIManager : MonoBehaviour
     }
     private void PutOneCardOnTheMiddle(int _indexCard, int _playerNumber)
     {
-        if(GetPositionOfThePlayer(_playerNumber) == 0 || GetPositionOfThePlayer(_playerNumber) == 2)
+        for(int i=0;i < middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Count; i++)
         {
-            playerUIs[GetPositionOfThePlayer(_playerNumber)].cardGOList[_indexCard].GetComponent<CardUI>().PutTheCardOnTheMiddle();
+            Destroy(middlePosition.GetComponent<ListOfMiddleCards>().listOfCards[i]);
+        }
+        middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Clear();
+
+        GameObject newCard = InstantiateCard(playerUIs[GetPositionOfThePlayer(_playerNumber)].cardGOList[_indexCard].GetComponent<CardUI>().cardBase, middlePosition);
+        newCard.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+
+        if (GetPositionOfThePlayer(_playerNumber) == 0 || GetPositionOfThePlayer(_playerNumber) == 2)
+        {
+            Destroy(playerUIs[GetPositionOfThePlayer(_playerNumber)].cardGOList[_indexCard]);
             playerUIs[GetPositionOfThePlayer(_playerNumber)].cardGOList.RemoveAt(_indexCard);
             ResetIndicesOfCards(_playerNumber);
         }
-        else
-        {
-            Debug.Log("The app will not instantiate this card because the card doesn't in the team");
-        }
+
         playerUIs[GetPositionOfThePlayer(_playerNumber)].user.cardList.RemoveAt(_indexCard);
         UpdateCardsOfPlayersUI();
     }
@@ -330,6 +399,30 @@ public class UIManager : MonoBehaviour
             }
         }
         return 0;
+    }
+    private void ActualiceNumberAndColor(int index)
+    {
+        CardBase card = playerUIs[0].user.cardList[index];
+
+        if (card.cardType == CardType.RedCard || card.cardType == CardType.SumRed || card.cardType == CardType.NotFollowingRed)
+        {
+            mainManager.actualColor = 1;
+        }
+        else if (card.cardType == CardType.BlueCard || card.cardType == CardType.SumBlue || card.cardType == CardType.NotFollowingBlue)
+        {
+            mainManager.actualColor = 2;
+        }
+        else if (card.cardType == CardType.YellowCard || card.cardType == CardType.SumYellow || card.cardType == CardType.NotFollowingYellow)
+        {
+            mainManager.actualColor = 3;
+        }
+        else if (card.cardType == CardType.GreenCard || card.cardType == CardType.SumGreen || card.cardType == CardType.NotFollowingGreen)
+        {
+            mainManager.actualColor = 4;
+        }
+
+        //Change the actual number to check if the next card is valid
+        mainManager.actualNumber = card.num;
     }
     #endregion
 }

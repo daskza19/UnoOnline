@@ -19,6 +19,8 @@ public class ServerManager : MonoBehaviour
     public List<UserBase> userList;
 
     [Header("Game Properties")]
+    public int actualColor = 0;
+    public int actualNumber = 0;
     private float startTime;
     public bool isInGame = false;
     public int gameTurn = 0;
@@ -99,7 +101,7 @@ public class ServerManager : MonoBehaviour
             float t = Time.time - startTime;
             string minutes = ((int)t / 60).ToString();
             string seconds = (t % 60).ToString("f2");
-            gameProperties[3].text = "Match Time: " + minutes + ":" + seconds;
+            gameProperties[5].text = "Match Time: " + minutes + ":" + seconds;
         }
 
         if (wannaUpdateInfo)
@@ -172,7 +174,10 @@ public class ServerManager : MonoBehaviour
 
         for(int i = 0; i < 4; i++)
         {
-            userList[i].userStatus = UserStatus.Waiting;
+            if(userList[i].userStatus != UserStatus.Disconnected)
+            {
+                userList[i].userStatus = UserStatus.Waiting;
+            }
         }
         userList[gameTurn].userStatus = UserStatus.InTurn;
         wannaUpdateInfo = true;
@@ -399,9 +404,17 @@ public class ServerManager : MonoBehaviour
     }
     public void UpdateGameUI()
     {
-        gameProperties[0].text = "Is in game: " + isInGame.ToString();
-        gameProperties[1].text = "Game Turn: " + gameTurn.ToString();
-        gameProperties[2].text = "Is clockwise: " + isClock.ToString();
+        string actualColorString = "None";
+        if (actualColor == 1) actualColorString = "Red";
+        if (actualColor == 2) actualColorString = "Blue";
+        if (actualColor == 3) actualColorString = "Yellow";
+        if (actualColor == 4) actualColorString = "Green";
+        gameProperties[0].text = "Actual Color: " + actualColorString;
+        gameProperties[1].text = "Actual Number: " + actualNumber.ToString();
+
+        gameProperties[2].text = "Is in game: " + isInGame.ToString();
+        gameProperties[3].text = "Player Turn: " + (gameTurn+1).ToString();
+        gameProperties[4].text = "Is clockwise: " + isClock.ToString();
     }
     public void PutOneUserDisconnected(int _index)
     {

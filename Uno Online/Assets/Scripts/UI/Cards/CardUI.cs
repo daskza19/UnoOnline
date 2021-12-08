@@ -44,7 +44,6 @@ public class CardUI : MonoBehaviour
             Debug.Log("UIManager is null in this card!");
             return;
         }
-
-        uiManager.GetComponent<UIManager>().SendToServerPutCardInMiddle(indexInCardList);
+        uiManager.GetComponent<UIManager>().CheckIfCardWithIndexIsValidAndSend(indexInCardList);
     }
 }

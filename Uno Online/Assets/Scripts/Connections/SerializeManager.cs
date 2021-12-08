@@ -129,7 +129,7 @@ public class SerializeManager : MonoBehaviour
             }
         }
     }
-    public void SerializeIndexCardToPutInMiddle(UserBase _user, int _indexCard)
+    public void SerializeIndexCardToPutInMiddle(UserBase _user, int _indexCard, bool isClient)
     {
         newStream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(newStream);
@@ -137,6 +137,16 @@ public class SerializeManager : MonoBehaviour
         writer.Write(13);
         writer.Write(_user.userNumber); //First we write which player is going to restart the list
         writer.Write(_indexCard);
+        if (isClient)
+        {
+            writer.Write(clientManager.actualColor);
+            writer.Write(clientManager.actualNumber);
+        }
+        else
+        {
+            writer.Write(serverManager.actualColor);
+            writer.Write(serverManager.actualNumber);
+        }
     }
     public void SerializeAllPlayerStatus()
     {
@@ -317,10 +327,12 @@ public class SerializeManager : MonoBehaviour
             if (_isClient)
             {
                 clientManager.userList[whichPlayer - 1] = new UserBase("", 0, 15);
+                clientManager.userList[whichPlayer - 1].userStatus = UserStatus.Disconnected;
             }
             else
             {
                 serverManager.userList[whichPlayer - 1] = new UserBase("", 0, 15);
+                serverManager.userList[whichPlayer - 1].userStatus = UserStatus.Disconnected;
                 SendData(2, false);
             }
         }
@@ -413,10 +425,14 @@ public class SerializeManager : MonoBehaviour
         if (_isClient)
         {
             clientManager.uiManager.WannaPutCardOnTheMiddle(whichPlayer, cardIndex);
+            clientManager.actualColor = _reader.ReadInt32();
+            clientManager.actualNumber = _reader.ReadInt32();
         }
         else
         {
             serverManager.userList[whichPlayer - 1].cardList.RemoveAt(cardIndex);
+            serverManager.actualColor = _reader.ReadInt32();
+            serverManager.actualNumber = _reader.ReadInt32();
             serverManager.wannaUpdateInfo = true;
             SendData(13, false, serverManager.userList[whichPlayer - 1], cardIndex); //After the server actualice the list, send the action to the other clients
         }
@@ -468,6 +484,11 @@ public class SerializeManager : MonoBehaviour
         {
             byte[] buffer = new byte[2048];
             int recv = serverManager.newSocket.ReceiveFrom(buffer, ref serverManager.sendEnp);
+            if (recv == 0)
+            {
+                whatis = 1000;
+                return whatis;
+            }
             Debug.Log("Received DATA");
             newStream = new MemoryStream(buffer);
             whatis = Deserialize(_isClient);
@@ -508,7 +529,7 @@ public class SerializeManager : MonoBehaviour
                 SerializeCardListFromAllUsers();
                 break;
             case (13):
-                SerializeIndexCardToPutInMiddle(_userToSend, _indexCard);
+                SerializeIndexCardToPutInMiddle(_userToSend, _indexCard, _isClient);
                 break;
             case (14):
                 SerializeAllPlayerStatus();
