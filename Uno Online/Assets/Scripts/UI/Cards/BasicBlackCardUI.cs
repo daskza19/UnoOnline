@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class BasicBlackCardUI : CardUI
 {
-    public override void SetCardUI(CardBase _card)
+    public override void SetCardUI(CardBase _card, int _playerNumber)
     {
-        base.SetCardUI(_card);
+        base.SetCardUI(_card, _playerNumber);
     }
 }

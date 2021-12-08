@@ -11,4 +11,6 @@ public class PlayerUI : MonoBehaviour
     public Text UserName;
     public Image PlayerNumber;
     public GameObject cardScroll;
+    public List<GameObject> cardGOList;
+    public Text countofCards;
 }

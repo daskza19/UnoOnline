@@ -32,6 +32,7 @@ public class MainManager : MonoBehaviour
     public EndPoint sendEnp;
     private Thread receiveThread;
 
+    public bool wannaPutCardOnMiddle = true;
     private bool wannaUpdateInfo = false;
     public int whatToDo = 1000;
 

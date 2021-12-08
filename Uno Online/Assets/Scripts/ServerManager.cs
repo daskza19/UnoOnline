@@ -36,7 +36,7 @@ public class ServerManager : MonoBehaviour
     public Thread mainThread;
     public Thread checkThread;
 
-    private bool wannaUpdateInfo = false;
+    public bool wannaUpdateInfo = false;
     private bool wannaStartTimer = false;
     public int whatToDo = 1000;
 
@@ -316,6 +316,7 @@ public class ServerManager : MonoBehaviour
         }
         wannaUpdateInfo = true;
         wannaRandomNumbers = true;
+        serializeManager.SendData(12, false); //Send all the new lists to all the players
     }
     #endregion
 

@@ -94,15 +94,58 @@ public class SerializeManager : MonoBehaviour
         writer.Write(10);
         writer.Write(_userNumber);
     }
-    public void SerializeNewCardForAUser(UserBase _user)
+    public void SerializeCardListFromOneUser(UserBase _user)
     {
         newStream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(newStream);
 
         writer.Write(11);
-        writer.Write(_user.userNumber);
-        writer.Write((int)_user.cardList[_user.cardList.Count-1].cardType);
-        writer.Write(_user.cardList[_user.cardList.Count - 1].num);
+        writer.Write(_user.userNumber); //First we write which player is going to restart the list
+        writer.Write(_user.cardList.Count);
+
+        //The server serialize all the cards from that user
+        for(int i = 0; i < _user.cardList.Count; i++)
+        {
+            writer.Write((int)_user.cardList[i].cardType);
+            writer.Write(_user.cardList[i].num);
+        }
+    }
+    public void SerializeCardListFromAllUsers()
+    {
+        newStream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(newStream);
+
+        writer.Write(12);
+
+        for(int i = 0; i < serverManager.userList.Count; i++)
+        {
+            writer.Write(serverManager.userList[i].cardList.Count);
+
+            //The server serialize all the cards from that user
+            for (int j = 0; j < serverManager.userList[i].cardList.Count; j++)
+            {
+                writer.Write((int)serverManager.userList[i].cardList[j].cardType);
+                writer.Write(serverManager.userList[i].cardList[j].num);
+            }
+        }
+    }
+    public void SerializeIndexCardToPutInMiddle(UserBase _user, int _indexCard)
+    {
+        newStream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(newStream);
+
+        writer.Write(13);
+        writer.Write(_user.userNumber); //First we write which player is going to restart the list
+        writer.Write(_indexCard);
+    }
+    public void SerializePetitionToPutCardOnMiddle(int whichCardIndex, UserBase _user)
+    {
+        newStream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(newStream);
+
+        writer.Write(12);
+        writer.Write(_user.userNumber); //First we write which player is going to put a card to the middle
+        writer.Write(whichCardIndex); //Then, write the index of the cardList is going to send from that user
     }
     #endregion
 
@@ -147,7 +190,15 @@ public class SerializeManager : MonoBehaviour
                 break;
             case (11):
                 //The client gets the new card (when a player have to get a card of the middle)
-                DeserializeNewCardToOnePlayer(reader, isClient);
+                DeserializeOneCardListOfPlayer(reader, isClient);
+                break;
+            case (12):
+                //The client gets all card list from all users
+                DeserializeAllCardListsFromAllPlayers(reader, isClient);
+                break;
+            case (13):
+                //The client /server gets the petition to put one card to the middle (from and index in cardlist from that user)
+                DeserializePlayerWantsPutCardOnMiddle(reader, isClient);
                 break;
         }
         return whatis;
@@ -292,22 +343,76 @@ public class SerializeManager : MonoBehaviour
         newStream.Flush();
         newStream.Close();
     }
-    private void DeserializeNewCardToOnePlayer(BinaryReader _reader, bool _isClient)
+    private void DeserializeOneCardListOfPlayer(BinaryReader _reader, bool _isClient)
     {
         int whichPlayer = _reader.ReadInt32();
+        int countCards = _reader.ReadInt32();
 
         if (_isClient)
         {
-            CardBase _newCard = new CardBase(CardType.None, 0);
-            _newCard.cardType = (CardType)_reader.ReadInt32();
-            _newCard.num = _reader.ReadInt32();
+            clientManager.userList[whichPlayer - 1].cardList.Clear();
 
-            clientManager.userList[whichPlayer - 1].cardList.Add(_newCard);
-            clientManager.uiManager.InstantiateNewCard(_newCard, whichPlayer);
+            for(int i = 0; i < countCards; i++)
+            {
+                CardBase _newCard = new CardBase(CardType.None, 0);
+                _newCard.cardType = (CardType)_reader.ReadInt32();
+                _newCard.num = _reader.ReadInt32();
+                clientManager.userList[whichPlayer - 1].cardList.Add(_newCard);
+            }
+
+            clientManager.uiManager.WannaUpdateCardsOfAllPlayers();
         }
         else
         {
-            Debug.Log("The server received a user card, in theory thats not possible :o");
+            Debug.Log("The server received a user card list, in theory thats not possible :o");
+        }
+
+        newStream.Flush();
+        newStream.Close();
+    }
+    private void DeserializeAllCardListsFromAllPlayers(BinaryReader _reader, bool _isClient)
+    {
+        if (_isClient)
+        {
+            for (int i = 0; i < clientManager.userList.Count; i++)
+            {
+                int countCards = _reader.ReadInt32();
+                clientManager.userList[i].cardList.Clear();
+
+                //The server serialize all the cards from that user
+                for (int j = 0; j < countCards; j++)
+                {
+                    CardBase _newCard = new CardBase(CardType.None, 0);
+                    _newCard.cardType = (CardType)_reader.ReadInt32();
+                    _newCard.num = _reader.ReadInt32();
+
+                    clientManager.userList[i].cardList.Add(_newCard);
+                }
+            }
+            clientManager.uiManager.WannaUpdateCardsOfAllPlayers();
+        }
+        else
+        {
+            Debug.Log("The server received a user card list, in theory thats not possible :o");
+        }
+
+        newStream.Flush();
+        newStream.Close();
+    }
+    private void DeserializePlayerWantsPutCardOnMiddle(BinaryReader _reader, bool _isClient)
+    {
+        int whichPlayer = _reader.ReadInt32();
+        int cardIndex = _reader.ReadInt32();
+
+        if (_isClient)
+        {
+            clientManager.uiManager.WannaPutCardOnTheMiddle(whichPlayer, cardIndex);
+        }
+        else
+        {
+            serverManager.userList[whichPlayer - 1].cardList.RemoveAt(cardIndex);
+            serverManager.wannaUpdateInfo = true;
+            SendData(13, false, serverManager.userList[whichPlayer - 1], cardIndex); //After the server actualice the list, send the action to the other clients
         }
 
         newStream.Flush();
@@ -342,7 +447,7 @@ public class SerializeManager : MonoBehaviour
 
         return whatis;
     }
-    public void SendData(int _what, bool _isClient, UserBase _userToSend = null)
+    public void SendData(int _what, bool _isClient, UserBase _userToSend = null, int _indexCard = 0)
     {
         switch (_what)
         {
@@ -369,7 +474,13 @@ public class SerializeManager : MonoBehaviour
                 SerializeUserAskForCard(_userToSend.userNumber);
                 break;
             case (11):
-                SerializeNewCardForAUser(_userToSend);
+                SerializeCardListFromOneUser(_userToSend);
+                break;
+            case (12):
+                SerializeCardListFromAllUsers();
+                break;
+            case (13):
+                SerializeIndexCardToPutInMiddle(_userToSend, _indexCard);
                 break;
         }
 

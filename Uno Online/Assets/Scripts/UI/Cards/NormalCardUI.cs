@@ -9,9 +9,9 @@ public class NormalCardUI : CardUI
     public Image cardColor;
     public Text numberText;
 
-    public override void SetCardUI(CardBase _card)
+    public override void SetCardUI(CardBase _card, int playerPosition)
     {
-        base.SetCardUI(_card);
+        base.SetCardUI(_card, playerPosition);
         cardBase = _card;
         numberText.text = _card.num.ToString();
 
