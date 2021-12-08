@@ -1201,12 +1201,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 430383397}
         m_TargetAssemblyTypeName: ServerManager, Assembly-CSharp
-        m_MethodName: CreateNewRandomCard
-        m_Mode: 1
+        m_MethodName: SumToAllPlayerNumberCards
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1588,19 +1588,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4569152173715074400, guid: 60aac253564750d4d84062a79369f5ea, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 179.69128
+      value: 164.9067
       objectReference: {fileID: 0}
     - target: {fileID: 4569152173715074400, guid: 60aac253564750d4d84062a79369f5ea, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -52.036
+      value: -55
       objectReference: {fileID: 0}
     - target: {fileID: 4569152174145055280, guid: 60aac253564750d4d84062a79369f5ea, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 359.3825
+      value: 329.8133
       objectReference: {fileID: 0}
     - target: {fileID: 4569152174145055280, guid: 60aac253564750d4d84062a79369f5ea, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 131.47423
+      value: 146.25882
       objectReference: {fileID: 0}
     - target: {fileID: 8085083360762553784, guid: 60aac253564750d4d84062a79369f5ea, type: 3}
       propertyPath: m_Name
