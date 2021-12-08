@@ -1922,7 +1922,7 @@ Animator:
   m_GameObject: {fileID: 1561617793}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 35df7529facbd9448a640b24e121e39c, type: 2}
+  m_Controller: {fileID: 9100000, guid: e0c0b70f0a91e4a47a69f7606d6102b0, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2189,6 +2189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0f0ce70fc4694543b28dccbf7c3ae8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  turnAnimator: {fileID: 1561617797}
   playerUIs:
   - {fileID: 1430235838}
   - {fileID: 1525514517}
@@ -2221,8 +2222,10 @@ MonoBehaviour:
   notFollowingCard: {fileID: 8490093365568236278, guid: e945c9a9f68a1384bae98946c6d6fa6a, type: 3}
   firstTeam: {r: 0.23529409, g: 0.6851179, b: 0.81960785, a: 1}
   SecondTeam: {r: 0.8396226, g: 0.2732734, b: 0.3225522, a: 1}
+  wannaPutCardOnTheMiddle: 0
   wannaUpdateCards: 0
   wannaUpdateCardsOfOnePlayer: 0
+  positions: 
 --- !u!1 &1775804648
 GameObject:
   m_ObjectHideFlags: 0

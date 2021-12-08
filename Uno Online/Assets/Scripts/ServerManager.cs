@@ -23,6 +23,7 @@ public class ServerManager : MonoBehaviour
     public bool isInGame = false;
     public int gameTurn = 0;
     public bool isClock = true;
+    public int actualTurn = 0;
 
     [Header("UI Things")]
     public List<Sprite> spritesPerfil;
@@ -124,6 +125,8 @@ public class ServerManager : MonoBehaviour
         Thread.Sleep(100);
         wannaStartTimer = true;
         serializeManager.SendData(4, false); //Send to the other players that the match is going to start (to change their scenes)
+        Thread.Sleep(500);
+        SumToAllPlayerNumberCards(5); //Put the first cards to all the players
 
         while (isInGame) //Start the gameloop
         {
@@ -146,6 +149,17 @@ public class ServerManager : MonoBehaviour
     #endregion
 
     #region Utilities
+    public int WhoIsNext()
+    {
+        //Actual turn is a int that says the player number that is going to be able to do an action
+        if (isClock) actualTurn++;
+        else if (!isClock) actualTurn--;
+
+        if (actualTurn <= 0) actualTurn = 4;
+        else if (actualTurn >= 5) actualTurn = 0;
+
+        return actualTurn;
+    }
     public bool CheckAllUsersState(UserStatus _status)
     {
         if (userList.Count != 4)
@@ -244,7 +258,6 @@ public class ServerManager : MonoBehaviour
 
             for(int j = 0; j < numberCardsToSum; j++) //Do the loop x times to get the new Cards
             {
-
                 CardBase _newCard = new CardBase(CardType.None);
 
                 //Not following Cards has a normal probability to appear

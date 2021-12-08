@@ -39,12 +39,14 @@ public class PlayerServer : MonoBehaviour
                 GameObject newCard = Instantiate(blackCard, new Vector3(0, 0, 0), Quaternion.identity, cardsPanel.transform);
                 cardsGOList.Add(newCard);
                 newCard.GetComponent<BasicBlackCardUI>().SetCardUI(cardToInstantiate, 0);
+                newCard.GetComponent<Button>().interactable = false;
             }
             else if (cardToInstantiate.cardType == CardType.BlackSum4Card)
             {
                 GameObject newCard = Instantiate(blackCardSum, new Vector3(0, 0, 0), Quaternion.identity, cardsPanel.transform);
                 cardsGOList.Add(newCard);
                 newCard.GetComponent<SumBlackCardUI>().SetCardUI(cardToInstantiate, 0);
+                newCard.GetComponent<Button>().interactable = false;
             }
             else if (cardToInstantiate.cardType == CardType.NotFollowingBlue ||
                 cardToInstantiate.cardType == CardType.NotFollowingGreen ||
@@ -54,6 +56,7 @@ public class PlayerServer : MonoBehaviour
                 GameObject newCard = Instantiate(notFollowingCard, new Vector3(0, 0, 0), Quaternion.identity, cardsPanel.transform);
                 cardsGOList.Add(newCard);
                 newCard.GetComponent<NotFollowingCardUI>().SetCardUI(cardToInstantiate, 0);
+                newCard.GetComponent<Button>().interactable = false;
             }
             else if (cardToInstantiate.cardType == CardType.SumBlue ||
                 cardToInstantiate.cardType == CardType.SumGreen ||
@@ -63,12 +66,14 @@ public class PlayerServer : MonoBehaviour
                 GameObject newCard = Instantiate(basicCardSum, new Vector3(0, 0, 0), Quaternion.identity, cardsPanel.transform);
                 cardsGOList.Add(newCard);
                 newCard.GetComponent<SumNormalCardUI>().SetCardUI(cardToInstantiate, 0);
+                newCard.GetComponent<Button>().interactable = false;
             }
             else
             {
                 GameObject newCard = Instantiate(basicCard, new Vector3(0, 0, 0), Quaternion.identity, cardsPanel.transform);
                 cardsGOList.Add(newCard);
                 newCard.GetComponent<NormalCardUI>().SetCardUI(cardToInstantiate, 0);
+                newCard.GetComponent<Button>().interactable = false;
             }
         }
     }
