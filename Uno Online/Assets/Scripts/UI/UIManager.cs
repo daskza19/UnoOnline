@@ -23,6 +23,7 @@ public class UIManager : MonoBehaviour
     public Color firstTeam;
     public Color SecondTeam;
 
+    public bool wannaUpdateStates = false;
     public bool wannaPutCardOnTheMiddle = false;
     private int indexCard = 0;
     public bool wannaUpdateCards = false;
@@ -35,13 +36,6 @@ public class UIManager : MonoBehaviour
     {
         mainManager = GameObject.Find("MainManager").GetComponent<MainManager>();
         SetUsersToBoard();
-        StartCoroutine(StartTheMatch());
-    }
-
-    private IEnumerator StartTheMatch()
-    {
-        yield return new WaitForSeconds(2);
-        turnAnimator.SetInteger("Turn", GetPositionOfThePlayer(1) + 1);
     }
 
     private void Update()
@@ -60,6 +54,11 @@ public class UIManager : MonoBehaviour
         {
             PutOneCardOnTheMiddle(indexCard, whichPlayer);
             wannaPutCardOnTheMiddle = false;
+        }
+        if (wannaUpdateStates)
+        {
+            UpdateUIByUsersStates();
+            wannaUpdateStates = false;
         }
     }
 
@@ -83,7 +82,7 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
-
+    #region ThreadPetitions
     public void WannaUpdateCardsOfAllPlayers()
     {
         wannaUpdateCards = true;
@@ -99,6 +98,11 @@ public class UIManager : MonoBehaviour
         whichPlayer = _whichplayer;
         wannaPutCardOnTheMiddle = true;
     }
+    public void WannaUpdateUIFromUserStates()
+    {
+        wannaUpdateStates = true;
+    }
+    #endregion
 
     #region Utilities
     private void SetUsersToBoard()
@@ -301,11 +305,26 @@ public class UIManager : MonoBehaviour
             playerUIs[GetPositionOfThePlayer(playerNumber)].cardGOList[i].GetComponent<CardUI>().indexInCardList = i;
         }
     }
-    private int GetPositionOfThePlayer(int playerNumber)
+    public int GetPositionOfThePlayer(int playerNumber)
     {
         for(int i = 0; i < 4; i++)
         {
             if(positions[i] == playerNumber)
+            {
+                return i;
+            }
+        }
+        return 0;
+    }
+    private void UpdateUIByUsersStates()
+    {
+        turnAnimator.SetInteger("Turn", GetPositionOfThePlayer(GetUserInListByStatus(UserStatus.InTurn)+1)+1);
+    }
+    private int GetUserInListByStatus(UserStatus _status)
+    {
+        for(int i = 0; i < mainManager.userList.Count; i++)
+        {
+            if(mainManager.userList[i].userStatus == _status)
             {
                 return i;
             }

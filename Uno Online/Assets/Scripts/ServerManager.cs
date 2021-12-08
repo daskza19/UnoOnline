@@ -23,7 +23,6 @@ public class ServerManager : MonoBehaviour
     public bool isInGame = false;
     public int gameTurn = 0;
     public bool isClock = true;
-    public int actualTurn = 0;
 
     [Header("UI Things")]
     public List<Sprite> spritesPerfil;
@@ -124,9 +123,15 @@ public class ServerManager : MonoBehaviour
         Debug.Log("All players DONE!");
         Thread.Sleep(100);
         wannaStartTimer = true;
+
         serializeManager.SendData(4, false); //Send to the other players that the match is going to start (to change their scenes)
+
         Thread.Sleep(500);
         SumToAllPlayerNumberCards(5); //Put the first cards to all the players
+
+        Thread.Sleep(250);
+        WhoIsNext();
+        serializeManager.SendData(14, false);
 
         while (isInGame) //Start the gameloop
         {
@@ -152,13 +157,26 @@ public class ServerManager : MonoBehaviour
     public int WhoIsNext()
     {
         //Actual turn is a int that says the player number that is going to be able to do an action
-        if (isClock) actualTurn++;
-        else if (!isClock) actualTurn--;
 
-        if (actualTurn <= 0) actualTurn = 4;
-        else if (actualTurn >= 5) actualTurn = 0;
+        UserBase user = new UserBase("", 0, 15);
+        while (user.userStatus==UserStatus.Disconnected)
+        {
+            if (isClock) gameTurn++;
+            else if (!isClock) gameTurn--;
 
-        return actualTurn;
+            if (gameTurn < 0) gameTurn = 3;
+            else if (gameTurn >= 4) gameTurn = 0;
+
+            user = userList[gameTurn];
+        }
+
+        for(int i = 0; i < 4; i++)
+        {
+            userList[i].userStatus = UserStatus.Waiting;
+        }
+        userList[gameTurn].userStatus = UserStatus.InTurn;
+        wannaUpdateInfo = true;
+        return gameTurn;
     }
     public bool CheckAllUsersState(UserStatus _status)
     {
@@ -330,6 +348,12 @@ public class ServerManager : MonoBehaviour
         wannaUpdateInfo = true;
         wannaRandomNumbers = true;
         serializeManager.SendData(12, false); //Send all the new lists to all the players
+    }
+    public void NextTurn()
+    {
+        WhoIsNext();
+        serializeManager.SendData(14, false);
+        wannaUpdateInfo = true;
     }
     #endregion
 

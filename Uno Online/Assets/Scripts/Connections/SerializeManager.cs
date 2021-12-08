@@ -138,14 +138,16 @@ public class SerializeManager : MonoBehaviour
         writer.Write(_user.userNumber); //First we write which player is going to restart the list
         writer.Write(_indexCard);
     }
-    public void SerializePetitionToPutCardOnMiddle(int whichCardIndex, UserBase _user)
+    public void SerializeAllPlayerStatus()
     {
         newStream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(newStream);
 
-        writer.Write(12);
-        writer.Write(_user.userNumber); //First we write which player is going to put a card to the middle
-        writer.Write(whichCardIndex); //Then, write the index of the cardList is going to send from that user
+        writer.Write(14);
+        for(int i = 0; i < 4; i++)
+        {
+            writer.Write((int)serverManager.userList[i].userStatus);
+        }
     }
     #endregion
 
@@ -199,6 +201,10 @@ public class SerializeManager : MonoBehaviour
             case (13):
                 //The client /server gets the petition to put one card to the middle (from and index in cardlist from that user)
                 DeserializePlayerWantsPutCardOnMiddle(reader, isClient);
+                break;
+            case (14):
+                //The server sent all players status, in this status we will know which user is in turn
+                DeserializeAllPlayersStatus(reader, isClient);
                 break;
         }
         return whatis;
@@ -418,6 +424,28 @@ public class SerializeManager : MonoBehaviour
         newStream.Flush();
         newStream.Close();
     }
+    private void DeserializeAllPlayersStatus(BinaryReader _reader, bool _isClient)
+    {
+        if (_isClient)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                clientManager.userList[i].userStatus = (UserStatus)_reader.ReadInt32();
+                clientManager.user = clientManager.userList[clientManager.uiManager.GetPositionOfThePlayer(clientManager.user.userNumber)];
+                clientManager.uiManager.WannaUpdateUIFromUserStates();
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                serverManager.userList[i].userStatus = (UserStatus)_reader.ReadInt32();
+            }
+        }
+
+        newStream.Flush();
+        newStream.Close();
+    }
     #endregion
 
     #region SendAndReceive
@@ -481,6 +509,9 @@ public class SerializeManager : MonoBehaviour
                 break;
             case (13):
                 SerializeIndexCardToPutInMiddle(_userToSend, _indexCard);
+                break;
+            case (14):
+                SerializeAllPlayerStatus();
                 break;
         }
 
