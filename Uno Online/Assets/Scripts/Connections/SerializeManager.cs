@@ -69,6 +69,11 @@ public class SerializeManager : MonoBehaviour
 
         writer.Write(3);
         writer.Write(_password);
+
+        if (!CheckIfEndPointIsInList())
+        {
+            serverManager.sendEnp.Add(serverManager.temporalEndPoint);
+        }
     }
     public void SerializeStartMatch()
     {
@@ -483,7 +488,7 @@ public class SerializeManager : MonoBehaviour
         else
         {
             byte[] buffer = new byte[2048];
-            int recv = serverManager.newSocket.ReceiveFrom(buffer, ref serverManager.sendEnp);
+            int recv = serverManager.newSocket.ReceiveFrom(buffer, ref serverManager.temporalEndPoint);
             if (recv == 0)
             {
                 whatis = 1000;
@@ -542,7 +547,10 @@ public class SerializeManager : MonoBehaviour
         }
         else
         {
-            serverManager.newSocket.SendTo(newStream.ToArray(), newStream.ToArray().Length, SocketFlags.None, serverManager.sendEnp);
+            for(int i = 0; i < serverManager.sendEnp.Count; i++)
+            {
+                serverManager.newSocket.SendTo(newStream.ToArray(), newStream.ToArray().Length, SocketFlags.None, serverManager.sendEnp[i]);
+            }
         }
         Debug.Log("Sent DATA");
     }
@@ -560,5 +568,14 @@ public class SerializeManager : MonoBehaviour
             }
         }
         return 5;
+    }
+
+    private bool CheckIfEndPointIsInList()
+    {
+        for(int i=0;i< serverManager.sendEnp.Count; i++)
+        {
+            if (serverManager.sendEnp[i] == serverManager.temporalEndPoint) return true;
+        }
+        return false;
     }
 }

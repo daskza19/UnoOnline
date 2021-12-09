@@ -34,7 +34,8 @@ public class ServerManager : MonoBehaviour
     private SerializeManager serializeManager;
     public Socket newSocket;
     public IPEndPoint ipep;
-    public EndPoint sendEnp;
+    public EndPoint temporalEndPoint;
+    public List<EndPoint> sendEnp;
     public Thread mainThread;
     public Thread checkThread;
 
@@ -55,7 +56,8 @@ public class ServerManager : MonoBehaviour
         serializeManager = GetComponent<SerializeManager>();
         newSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         ipep = new IPEndPoint(IPAddress.Any, host);
-        sendEnp = (EndPoint)ipep;
+        temporalEndPoint = (EndPoint)ipep;
+        sendEnp = new List<EndPoint>();
 
         newSocket.Bind(ipep);
 

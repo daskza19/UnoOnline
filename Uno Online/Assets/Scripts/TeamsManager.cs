@@ -51,7 +51,7 @@ public class TeamsManager : MonoBehaviour
 
     public void UpdateUsersTeams()
     {
-        mainManager.user.userNumber = mainManager.userList.Count;
+        //mainManager.user.userNumber = mainManager.userList.Count;
         Debug.Log("UpdateUsers");
 
         for (int j = 0; j < userPanels.Count; j++)
