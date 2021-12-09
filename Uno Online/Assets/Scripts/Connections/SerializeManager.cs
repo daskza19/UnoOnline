@@ -418,7 +418,10 @@ public class SerializeManager : MonoBehaviour
                     clientManager.userList[i].cardList.Add(_newCard);
                 }
             }
-            clientManager.uiManager.WannaUpdateCardsOfAllPlayers();
+            if (clientManager.uiManager != null)
+            {
+                clientManager.uiManager.WannaUpdateCardsOfAllPlayers();
+            }
         }
         else
         {

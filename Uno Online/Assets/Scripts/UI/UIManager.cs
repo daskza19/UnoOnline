@@ -354,7 +354,7 @@ public class UIManager : MonoBehaviour
         }
         middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Clear();
 
-        GameObject newCard = InstantiateCard(playerUIs[GetPositionOfThePlayer(_playerNumber)].cardGOList[_indexCard].GetComponent<CardUI>().cardBase, middlePosition);
+        GameObject newCard = InstantiateCard(playerUIs[GetPositionOfThePlayer(_playerNumber)].user.cardList[_indexCard], middlePosition);
         newCard.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
         if (GetPositionOfThePlayer(_playerNumber) == 0 || GetPositionOfThePlayer(_playerNumber) == 2)
@@ -388,6 +388,7 @@ public class UIManager : MonoBehaviour
     private void UpdateUIByUsersStates()
     {
         turnAnimator.SetInteger("Turn", GetPositionOfThePlayer(GetUserInListByStatus(UserStatus.InTurn)+1)+1);
+        wannaUpdateCards = true;
     }
     private int GetUserInListByStatus(UserStatus _status)
     {
