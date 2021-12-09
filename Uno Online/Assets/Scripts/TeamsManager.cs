@@ -16,6 +16,7 @@ public class TeamsManager : MonoBehaviour
     public Animator animator;
 
     [Header("UI Things")]
+    public Button passUserButton;
     public InputField nameInput;
     public InputField passwordInput;
     public GameObject userPrefab;
@@ -42,16 +43,33 @@ public class TeamsManager : MonoBehaviour
         }
         else
         {
+            passUserButton.interactable = false;
             mainManager.user.userName = nameInput.text;
             mainManager.user.userStatus = UserStatus.Connected;
+            mainManager.user.RandomUserID();
             serializeManager.SendData(1, true, mainManager.user);
             animator.SetTrigger("OutPanel");
         }
     }
 
+    private int ReturnPlayerNumberOfList()
+    {
+        for(int i = 0; i < mainManager.userList.Count; i++)
+        {
+            Debug.Log("id: " + mainManager.userList[i].userID);
+            if (mainManager.user.userID == mainManager.userList[i].userID)
+            {
+                Debug.Log("Encountered Player with the same ID. Player number: " + mainManager.userList[i].userNumber.ToString() + " and name: " + mainManager.userList[i].userName);
+                return mainManager.userList[i].userNumber;
+            }
+        }
+        Debug.Log("No user encountered with this id");
+        return 1;
+    }
+
     public void UpdateUsersTeams()
     {
-        //mainManager.user.userNumber = mainManager.userList.Count;
+        mainManager.user.userNumber = ReturnPlayerNumberOfList();
         Debug.Log("UpdateUsers");
 
         for (int j = 0; j < userPanels.Count; j++)

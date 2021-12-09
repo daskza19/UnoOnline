@@ -3786,6 +3786,7 @@ MonoBehaviour:
   mainManager: {fileID: 262466034}
   serializeManager: {fileID: 262466033}
   animator: {fileID: 957579730}
+  passUserButton: {fileID: 2098129949}
   nameInput: {fileID: 623535257}
   passwordInput: {fileID: 485470254}
   userPrefab: {fileID: 977705991609847816, guid: c780d9f729158414faf7ea434846191d, type: 3}

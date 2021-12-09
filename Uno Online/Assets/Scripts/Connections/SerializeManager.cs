@@ -35,6 +35,7 @@ public class SerializeManager : MonoBehaviour
         writer.Write(_user.userImage);
         writer.Write(_user.userNumber);
         writer.Write((int)_user.userStatus);
+        writer.Write(_user.userID);
     }
     public void SerializeListOfUsers(List<UserBase> _listUsers)
     {
@@ -52,6 +53,7 @@ public class SerializeManager : MonoBehaviour
                 writer.Write(100);
                 writer.Write(100);
                 writer.Write(0);
+                writer.Write(0);
             }
             else
             {
@@ -59,6 +61,7 @@ public class SerializeManager : MonoBehaviour
                 writer.Write(_listUsers[i].userImage);
                 writer.Write(_listUsers[i].userNumber);
                 writer.Write((int)_listUsers[i].userStatus);
+                writer.Write(_listUsers[i].userID);
             }
         }
     }
@@ -243,11 +246,13 @@ public class SerializeManager : MonoBehaviour
         _newUser.userImage = _reader.ReadInt32();
         _newUser.userNumber = _reader.ReadInt32();
         _newUser.userStatus = (UserStatus)_reader.ReadInt32();
+        _newUser.userID = _reader.ReadInt32();
+
 
         newStream.Flush();
         newStream.Close();
 
-        if(_isClient == false)
+        if(_isClient == false && serverManager.isInGame == false)
         {
             int position = CheckForTheFirstUserNull();
             if (position == 5) //That's the first user connected
@@ -277,6 +282,7 @@ public class SerializeManager : MonoBehaviour
             _newUser.userImage = _reader.ReadInt32();
             _newUser.userNumber = _reader.ReadInt32();
             _newUser.userStatus = (UserStatus)_reader.ReadInt32();
+            _newUser.userID = _reader.ReadInt32();
 
             _userList.Add(_newUser);
         }
