@@ -1582,7 +1582,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.6320754, g: 0.6320754, b: 0.6320754, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -1600,7 +1600,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 861135872}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1728928103}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: SendToServerUNOPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &861135872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3029,6 +3041,7 @@ MonoBehaviour:
   - {fileID: 5427448470303778207, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
   mainManager: {fileID: 0}
   panelToChooseColors: {fileID: 1343470159}
+  unoButton: {fileID: 0}
   basicCard: {fileID: 8490093365568236278, guid: 92bf0f4b527ad1541abdfcb515c59605, type: 3}
   basicCardSum: {fileID: 8490093365568236278, guid: 308b918f9437f4e4a9be319ed8754350, type: 3}
   blackCard: {fileID: 8490093365568236278, guid: 428d31c38c8ac6f42bba182b7cb7eb4b, type: 3}
