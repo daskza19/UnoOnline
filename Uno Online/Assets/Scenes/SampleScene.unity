@@ -3041,7 +3041,7 @@ MonoBehaviour:
   - {fileID: 5427448470303778207, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
   mainManager: {fileID: 0}
   panelToChooseColors: {fileID: 1343470159}
-  unoButton: {fileID: 0}
+  unoButton: {fileID: 861135871}
   basicCard: {fileID: 8490093365568236278, guid: 92bf0f4b527ad1541abdfcb515c59605, type: 3}
   basicCardSum: {fileID: 8490093365568236278, guid: 308b918f9437f4e4a9be319ed8754350, type: 3}
   blackCard: {fileID: 8490093365568236278, guid: 428d31c38c8ac6f42bba182b7cb7eb4b, type: 3}

@@ -40,7 +40,6 @@ public class UIManager : MonoBehaviour
     {
         mainManager = GameObject.Find("MainManager").GetComponent<MainManager>();
         SetUsersToBoard();
-        unoButton.interactable = false;
     }
 
     private void Update()
@@ -65,14 +64,14 @@ public class UIManager : MonoBehaviour
             UpdateUIByUsersStates();
             wannaUpdateStates = false;
         }
-        //if (mainManager.user.cardList.Count == 1)
-        //{
-        //    unoButton.interactable = true;
-        //}
-        //else
-        //{
-        //    unoButton.interactable = false;
-        //}
+        if (mainManager.user.cardList.Count == 1)
+        {
+            unoButton.interactable = true;
+        }
+        else
+        {
+            unoButton.interactable = false;
+        }
     }
 
     #region PetitionsToServer
@@ -88,6 +87,7 @@ public class UIManager : MonoBehaviour
     {
         Debug.Log("UNO!");
         mainManager.serializeManager.SendData(15, true, mainManager.user);
+        unoButton.interactable = false;
     }
     public void CheckIfCardWithIndexIsValidAndSend(int indexCard)
     {
