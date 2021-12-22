@@ -167,6 +167,14 @@ public class SerializeManager : MonoBehaviour
             writer.Write((int)serverManager.userList[i].userStatus);
         }
     }
+    public void SerializeUNOButtonPressed(int _userNumber)
+    {
+        newStream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(newStream);
+
+        writer.Write(14);
+        writer.Write(_userNumber);
+    }
     #endregion
 
     #region Deserialize
@@ -223,6 +231,10 @@ public class SerializeManager : MonoBehaviour
             case (14):
                 //The server sent all players status, in this status we will know which user is in turn
                 DeserializeAllPlayersStatus(reader, isClient);
+                break;
+            case (15):
+                //The server gets the user that pressed UNO button
+                DeserializeUNOButtonPressed(reader, isClient);
                 break;
         }
         return whatis;
@@ -472,6 +484,16 @@ public class SerializeManager : MonoBehaviour
                 serverManager.userList[i].userStatus = (UserStatus)_reader.ReadInt32();
             }
         }
+
+        newStream.Flush();
+        newStream.Close();
+    }
+    private void DeserializeUNOButtonPressed(BinaryReader _reader, bool _isClient)
+    {
+        int whichPlayer = _reader.ReadInt32();
+
+        //AQUI DEBERIA COMPROBAR SI EL USUARIO QUE HA PULSADO EL BOTON O SU COMPAÑERO TIENE 1 CARTA
+        //IF(LE QUEDA UNA CARTA) NO HACER NADA, IF(AMBOS TIENEN MAS DE UNA CARTA) SEND 2 CARDS AL USUARIO QUE LE QUEDA 1 CARTA
 
         newStream.Flush();
         newStream.Close();
