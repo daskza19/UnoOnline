@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     public List<Sprite> numbersPlayers;
     public MainManager mainManager;
     public GameObject panelToChooseColors;
+    public Button unoButton;
 
     [Header("Cards prefabs")]
     public GameObject basicCard;
@@ -32,6 +33,7 @@ public class UIManager : MonoBehaviour
     private int whichPlayer = 0;
     public List<int> positions = new List<int>();
     private int indexCardToSendMiddle = 0;
+
 
     // Start is called before the first frame update
     void Start()
@@ -62,6 +64,14 @@ public class UIManager : MonoBehaviour
             UpdateUIByUsersStates();
             wannaUpdateStates = false;
         }
+        if (mainManager.user.cardList.Count == 1)
+        {
+            unoButton.interactable = true;
+        }
+        else
+        {
+            unoButton.interactable = false;
+        }
     }
 
     #region PetitionsToServer
@@ -72,6 +82,12 @@ public class UIManager : MonoBehaviour
             Debug.Log("Send to server the petition to get a new card!");
             mainManager.serializeManager.SendData(10, true, mainManager.user);
         }
+    }
+    public void SendToServerUNOPressed()
+    {
+        Debug.Log("UNO!");
+        mainManager.serializeManager.SendData(15, true, mainManager.user);
+        unoButton.interactable = false;
     }
     public void CheckIfCardWithIndexIsValidAndSend(int indexCard)
     {
