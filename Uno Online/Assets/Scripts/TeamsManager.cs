@@ -103,4 +103,12 @@ public class TeamsManager : MonoBehaviour
             userPanels.Add(newGO);
         }
     }
+
+    #region CloseGame
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+    #endregion
+
 }
