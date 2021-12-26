@@ -394,7 +394,6 @@ public class SerializeManager : MonoBehaviour
 
         if (_isClient)
         {
-            clientManager.alreadyPutCardInMiddle = false;
             clientManager.userList[whichPlayer - 1].cardList.Clear();
 
             for(int i = 0; i < countCards; i++)
@@ -454,7 +453,6 @@ public class SerializeManager : MonoBehaviour
 
         if (_isClient)
         {
-            clientManager.alreadyPutCardInMiddle = true;
             clientManager.uiManager.WannaPutCardOnTheMiddle(whichPlayer, cardIndex);
             clientManager.actualColor = _reader.ReadInt32();
             clientManager.actualNumber = _reader.ReadInt32();
