@@ -7,8 +7,8 @@ public class SumNormalCardUI : CardUI
 {
     [Header("UI Elements")]
     public Image cardColor;
-    public Text numberText1;
-    public Text numberText2;
+    public Text normalCard_numberText1;
+    public Text normalCard_numberText2;
     public Image panelCard1;
     public Image panelCard2;
 
@@ -16,8 +16,8 @@ public class SumNormalCardUI : CardUI
     {
         base.SetCardUI(_card, _playerNumber);
         cardBase = _card;
-        numberText1.text = "+ " + _card.num.ToString();
-        numberText2.text = "+ " + _card.num.ToString();
+        normalCard_numberText1.text = "+ " + 2;
+        normalCard_numberText2.text = "+ " + 2;
 
         switch (_card.cardType)
         {

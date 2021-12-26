@@ -35,6 +35,6 @@ public class CardBase
 
     public virtual void DoAction()
     {
-        Debug.Log("Acton DONE");
+        Debug.Log("Action DONE");
     }
 }

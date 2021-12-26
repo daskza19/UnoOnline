@@ -523,8 +523,8 @@ MonoBehaviour:
   greenColor: {r: 0.3019608, g: 1, b: 0.21176471, a: 1}
   blackColor: {r: 0.14117648, g: 0.14117648, b: 0.14117648, a: 1}
   cardColor: {fileID: 7116723354154593026}
-  numberText1: {fileID: 1526513845548174622}
-  numberText2: {fileID: 3493056046874088448}
+  normalCard_numberText1: {fileID: 1526513845548174622}
+  normalCard_numberText2: {fileID: 3493056046874088448}
   panelCard1: {fileID: 6623326094053218869}
   panelCard2: {fileID: 3436999556012161210}
 --- !u!114 &5227513113698218556
