@@ -62,7 +62,8 @@ public class MainManager : MonoBehaviour
         sendEnp = (EndPoint)ipep;
 
         serializeManager.SendData(0, true);
-
+        actualColor = 4;
+        actualNumber = 8;
         receiveThread = new Thread(ReceiveLoop);
         receiveThread.Start();
     }

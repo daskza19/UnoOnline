@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     public MainManager mainManager;
     public ServerManager serverManager;
     public GameObject panelToChooseColors;
+    public GameObject endPanel;
     public Button unoButton;
 
     [Header("Cards prefabs")]
@@ -41,6 +42,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         mainManager = GameObject.Find("MainManager").GetComponent<MainManager>();
+        endPanel.SetActive(false);
         SetUsersToBoard();
         unoButton.interactable = false;
     }
@@ -113,10 +115,13 @@ public class UIManager : MonoBehaviour
             //    ActualiceNumberAndColor(indexCard);
             //    SendToServerPutCardInMiddle();
             //}
-            //else if (playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackColorCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackSum4Card)
-            //{
-            //    panelToChooseColors.SetActive(true);
-            //}
+            if (playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackColorCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackSum4Card)
+            {
+                ActualiceNumberAndColor(indexCard);
+                panelToChooseColors.SetActive(true);
+                //ActualiceNumberAndColor(indexCard);
+                //SendToServerPutCardInMiddle();
+            }
             //else
             //{
             //    panelToChooseColors.SetActive(true);
