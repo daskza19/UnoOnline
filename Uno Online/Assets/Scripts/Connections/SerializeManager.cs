@@ -168,13 +168,13 @@ public class SerializeManager : MonoBehaviour
             writer.Write((int)serverManager.userList[i].userStatus);
         }
     }
-    public void SerializeUNOButtonPressed(int _userNumber)
+    public void SerializeUNOButtonPressed(UserBase _user)
     {
         newStream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(newStream);
 
-        writer.Write(14);
-        writer.Write(_userNumber);
+        writer.Write(15);
+        writer.Write(_user.userNumber);
     }
     #endregion
 
@@ -594,6 +594,9 @@ public class SerializeManager : MonoBehaviour
                 break;
             case (14):
                 SerializeAllPlayerStatus();
+                break;
+            case (15):
+                SerializeUNOButtonPressed(_userToSend);
                 break;
         }
 
