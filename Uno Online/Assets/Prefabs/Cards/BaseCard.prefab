@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 1418004302557211526}
   - component: {fileID: 8227757678080020615}
   m_Layer: 5
-  m_Name: SmallCardNumer1
+  m_Name: SmallCardNumber1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -183,7 +183,7 @@ GameObject:
   - component: {fileID: 929651449230341869}
   - component: {fileID: 3233423217070200155}
   m_Layer: 5
-  m_Name: SmallCardNumer2
+  m_Name: SmallCardNumber2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -436,6 +436,8 @@ MonoBehaviour:
   blackColor: {r: 0.14117648, g: 0.14117648, b: 0.14117648, a: 1}
   cardColor: {fileID: 7116723354154593026}
   numberText: {fileID: 1526513845548174622}
+  smallnumberText1: {fileID: 1418004302557211526}
+  smallnumberText2: {fileID: 929651449230341869}
 --- !u!114 &5227513113698218556
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 1886411580001030710}
   - component: {fileID: 9112900417224855213}
   m_Layer: 5
-  m_Name: Image2
+  m_Name: ProhibitedImageSmall1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -106,7 +106,7 @@ RectTransform:
   m_LocalScale: {x: 0.2351498, y: 0.2351498, z: 0.2351498}
   m_Children: []
   m_Father: {fileID: 1677192250884416413}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 2932312048008974715}
   - component: {fileID: 3418730539157793672}
   m_Layer: 5
-  m_Name: Image1
+  m_Name: ProhibitedImageSmall2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -270,7 +270,7 @@ GameObject:
   - component: {fileID: 166433087283370638}
   - component: {fileID: 576936951940647577}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ProhibitedImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -288,7 +288,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1677192250884416413}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -316,14 +316,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.2216981, b: 0.2216981, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9b022a593f1d46d42995cc81193a1666, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7d106a87023a24f498fc54543c6926a3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -380,9 +380,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 960047351659051244}
-  - {fileID: 7848716457352984299}
-  - {fileID: 2943490660535536507}
   - {fileID: 3667484757398938633}
+  - {fileID: 2943490660535536507}
+  - {fileID: 7848716457352984299}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -423,6 +423,7 @@ MonoBehaviour:
   greenColor: {r: 0.3019608, g: 1, b: 0.21176471, a: 1}
   blackColor: {r: 0.14117648, g: 0.14117648, b: 0.14117648, a: 1}
   cardColor: {fileID: 7116723354154593026}
+  prohibitedImage: {fileID: 166433087283370638}
 --- !u!114 &5227513113698218556
 MonoBehaviour:
   m_ObjectHideFlags: 0
