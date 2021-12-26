@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Threading;
 using UnityEngine;
 
 public class SerializeManager : MonoBehaviour
@@ -393,6 +394,7 @@ public class SerializeManager : MonoBehaviour
 
         if (_isClient)
         {
+            clientManager.alreadyPutCardInMiddle = false;
             clientManager.userList[whichPlayer - 1].cardList.Clear();
 
             for(int i = 0; i < countCards; i++)
@@ -452,45 +454,45 @@ public class SerializeManager : MonoBehaviour
 
         if (_isClient)
         {
+            clientManager.alreadyPutCardInMiddle = true;
             clientManager.uiManager.WannaPutCardOnTheMiddle(whichPlayer, cardIndex);
             clientManager.actualColor = _reader.ReadInt32();
             clientManager.actualNumber = _reader.ReadInt32();
-            //if (serverManager.userList[whichPlayer - 1].cardList.Count == 1)
-            //{
-            //    clientManager.uiManager.endPanel.SetActive(true);
-            //}
         }
         else
         {
-            serverManager.userList[whichPlayer - 1].cardList.RemoveAt(cardIndex);
             serverManager.actualColor = _reader.ReadInt32();
             serverManager.actualNumber = _reader.ReadInt32();
-            if (serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingYellow ||
-                            serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingRed ||
-                            serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingGreen ||
-                            serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingBlue)
-            {
-                serverManager.WhoIsNext();
-            }
 
-            serverManager.NextTurn();
+            //if (serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingYellow ||
+            //    serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingRed ||
+            //    serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingGreen ||
+            //    serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingBlue)
+            //{
+            //    serverManager.WhoIsNext();
+            //}
+            //
+            //if (serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumBlue ||
+            //    serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumRed ||
+            //    serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumYellow ||
+            //    serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumGreen)
+            //{
+            //    serverManager.SumToOnePlayerNumberCards(2, serverManager.gameTurn + 1);
+            //    Debug.Log("SUMANDO 2");
+            //    SendData(12, false);
+            //}
+            //
+            //else if (serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.BlackSum4Card)
+            //{
+            //    serverManager.SumToOnePlayerNumberCards(4, serverManager.gameTurn + 1);
+            //    Debug.Log("SUMANDO 4");
+            //    SendData(12, false);
+            //}
 
-            if (serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumBlue ||
-                serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumRed ||
-                serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumYellow ||
-                serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumGreen)
-            {
-                serverManager.SumToOnePlayerNumberCards(2, whichPlayer-1);
-                Debug.Log("SUMANDO 2");
-            }
-
-            else if (serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.BlackSum4Card)
-            {
-                serverManager.SumToOnePlayerNumberCards(4, whichPlayer-1);
-                Debug.Log("SUMANDO 4");
-            }
+            serverManager.userList[whichPlayer - 1].cardList.RemoveAt(cardIndex);
             serverManager.wannaUpdateInfo = true;
-            SendData(13, false, serverManager.userList[whichPlayer - 1], cardIndex); //After the server actualice the list, send the action to the other clients 
+            SendData(13, false, serverManager.userList[whichPlayer-1], cardIndex); //After the server actualice the list, send the action to the other clients 
+            serverManager.NextTurn();
         }
 
         newStream.Flush();
@@ -500,6 +502,7 @@ public class SerializeManager : MonoBehaviour
     {
         if (_isClient)
         {
+            clientManager.alreadyPutCardInMiddle = false;
             for (int i = 0; i < 4; i++)
             {
                 clientManager.userList[i].userStatus = (UserStatus)_reader.ReadInt32();

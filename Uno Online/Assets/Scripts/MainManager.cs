@@ -19,6 +19,7 @@ public class MainManager : MonoBehaviour
     public List<UserBase> userList;
 
     [Header("Game Properties")]
+    public bool alreadyPutCardInMiddle = false;
     public int actualColor = 0;
     public int actualNumber = 0;
     public UIManager uiManager;

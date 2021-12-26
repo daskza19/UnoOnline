@@ -132,11 +132,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7386342881642563616, guid: 173143c9c4cbc5d4ca718e55dc7451b3, type: 3}
       propertyPath: actualColor
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7386342881642563616, guid: 173143c9c4cbc5d4ca718e55dc7451b3, type: 3}
       propertyPath: actualNumber
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7386342881642563618, guid: 173143c9c4cbc5d4ca718e55dc7451b3, type: 3}
       propertyPath: m_RootOrder

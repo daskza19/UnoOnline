@@ -98,68 +98,58 @@ public class UIManager : MonoBehaviour
     }
     public void CheckIfCardWithIndexIsValidAndSend(int indexCard)
     {
-        
-        if (mainManager.user.userStatus == UserStatus.InTurn)
+        if (mainManager.user.userStatus == UserStatus.InTurn && mainManager.alreadyPutCardInMiddle == false)
         {   
             indexCardToSendMiddle = indexCard;
 
-             if (playerUIs[0].user.cardList[indexCard].num == mainManager.actualNumber)
+            if (playerUIs[0].user.cardList[indexCard].num == mainManager.actualNumber)
             {
+                mainManager.alreadyPutCardInMiddle = true;
                 Debug.Log("Send to server the petition to put one card in the middle");
                 ActualiceNumberAndColor(indexCard);
                 SendToServerPutCardInMiddle();    
             }
-            //if (playerUIs[0].user.cardList[indexCard].cardType != CardType.BlackColorCard && playerUIs[0].user.cardList[indexCard].cardType != CardType.BlackSum4Card)
-            //{
-            //    Debug.Log("Send to server the petition to put one card in the middle");
-            //    ActualiceNumberAndColor(indexCard);
-            //    SendToServerPutCardInMiddle();
-            //}
+
             if (playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackColorCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackSum4Card)
             {
+                mainManager.alreadyPutCardInMiddle = true;
                 ActualiceNumberAndColor(indexCard);
                 panelToChooseColors.SetActive(true);
-                //ActualiceNumberAndColor(indexCard);
-                //SendToServerPutCardInMiddle();
             }
-            //else
-            //{
-            //    panelToChooseColors.SetActive(true);
-            //}
+
             switch (mainManager.actualColor)
             {
                 case 1:
                     if (playerUIs[0].user.cardList[indexCard].cardType == CardType.RedCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.NotFollowingRed || playerUIs[0].user.cardList[indexCard].cardType == CardType.SumRed)
                     {
+                        mainManager.alreadyPutCardInMiddle = true;
                         Debug.Log("Send to server the petition to put one card in the middle");
                         ActualiceNumberAndColor(indexCard);
                         SendToServerPutCardInMiddle();
-                        
                     }
                     break;
                 case 2:
-                    if (playerUIs[0].user.cardList[indexCard].cardType == CardType.BlueCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.NotFollowingBlue || playerUIs[0].user.cardList[indexCard].cardType == CardType.BlueCard)
+                    if (playerUIs[0].user.cardList[indexCard].cardType == CardType.BlueCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.NotFollowingBlue || playerUIs[0].user.cardList[indexCard].cardType == CardType.SumBlue)
                     {
+                        mainManager.alreadyPutCardInMiddle = true;
                         Debug.Log("Send to server the petition to put one card in the middle");
                         ActualiceNumberAndColor(indexCard);
                         SendToServerPutCardInMiddle();
-                        
-
                     }
                     break;
                 case 3:
                     if (playerUIs[0].user.cardList[indexCard].cardType == CardType.YellowCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.NotFollowingYellow || playerUIs[0].user.cardList[indexCard].cardType == CardType.SumYellow)
                     {
+                        mainManager.alreadyPutCardInMiddle = true;
                         Debug.Log("Send to server the petition to put one card in the middle");
                         ActualiceNumberAndColor(indexCard);
                         SendToServerPutCardInMiddle();
-                        
-
                     }
                     break;
                 case 4:
                     if (playerUIs[0].user.cardList[indexCard].cardType == CardType.GreenCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.NotFollowingGreen || playerUIs[0].user.cardList[indexCard].cardType == CardType.SumGreen)
                     {
+                        mainManager.alreadyPutCardInMiddle = true;
                         Debug.Log("Send to server the petition to put one card in the middle");
                         ActualiceNumberAndColor(indexCard);
                         SendToServerPutCardInMiddle();
@@ -432,6 +422,8 @@ public class UIManager : MonoBehaviour
             Destroy(middlePosition.GetComponent<ListOfMiddleCards>().listOfCards[i]);
         }
         middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Clear();
+        Debug.Log("Put the new card on the middle: " + mainManager.userList[_playerNumber-1].cardList[_indexCard].cardType.ToString());
+
 
         GameObject newCard = InstantiateCard(playerUIs[GetPositionOfThePlayer(_playerNumber)].user.cardList[_indexCard], middlePosition);
         newCard.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);

@@ -19,8 +19,8 @@ public class ServerManager : MonoBehaviour
     public List<UserBase> userList;
 
     [Header("Game Properties")]
-    public int actualColor = 0;
-    public int actualNumber = 0;
+    public int actualColor = 4;
+    public int actualNumber = 8;
     private float startTime;
     public bool isInGame = false;
     public int gameTurn = 0;
