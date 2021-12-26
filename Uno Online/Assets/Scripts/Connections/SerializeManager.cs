@@ -149,6 +149,7 @@ public class SerializeManager : MonoBehaviour
         {
             writer.Write(clientManager.actualColor);
             writer.Write(clientManager.actualNumber);
+            
         }
         else
         {
@@ -456,11 +457,35 @@ public class SerializeManager : MonoBehaviour
         }
         else
         {
+            if (serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingYellow ||
+                serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingRed ||
+                serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingGreen ||
+                serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingBlue)
+            {
+                serverManager.WhoIsNext();
+                //serverManager.NextTurn();
+                Debug.Log("PASANDO TURNO");
+            }
+            //else if (serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumBlue ||
+            //    serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumRed ||
+            //    serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumYellow ||
+            //    serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumGreen)
+            //{
+            //    serverManager.SumToAllPlayerNumberCards(2);
+            //    Debug.Log("SUMANDO 2");
+            //}
+            //else if (serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.BlackSum4Card)
+            //{
+            //    serverManager.SumToAllPlayerNumberCards(4);
+            //    Debug.Log("SUMANDO 4");
+            //}
             serverManager.userList[whichPlayer - 1].cardList.RemoveAt(cardIndex);
             serverManager.actualColor = _reader.ReadInt32();
             serverManager.actualNumber = _reader.ReadInt32();
             serverManager.wannaUpdateInfo = true;
-            SendData(13, false, serverManager.userList[whichPlayer - 1], cardIndex); //After the server actualice the list, send the action to the other clients
+            SendData(13, false, serverManager.userList[whichPlayer - 1], cardIndex); //After the server actualice the list, send the action to the other clients 
+            serverManager.NextTurn();
+
         }
 
         newStream.Flush();

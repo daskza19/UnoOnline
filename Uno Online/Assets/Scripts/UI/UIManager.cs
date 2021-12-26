@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     public List<Sprite> fotosPerfil;
     public List<Sprite> numbersPlayers;
     public MainManager mainManager;
+    public ServerManager serverManager;
     public GameObject panelToChooseColors;
     public Button unoButton;
 
@@ -81,6 +82,7 @@ public class UIManager : MonoBehaviour
         {
             Debug.Log("Send to server the petition to get a new card!");
             mainManager.serializeManager.SendData(10, true, mainManager.user);
+            
         }
     }
     public void SendToServerUNOPressed()
@@ -91,17 +93,31 @@ public class UIManager : MonoBehaviour
     }
     public void CheckIfCardWithIndexIsValidAndSend(int indexCard)
     {
-        //TODO: Check if the card is valid card
+        
         if (mainManager.user.userStatus == UserStatus.InTurn)
         {   
             indexCardToSendMiddle = indexCard;
-            if (playerUIs[0].user.cardList[indexCard].num == mainManager.actualNumber)
+
+             if (playerUIs[0].user.cardList[indexCard].num == mainManager.actualNumber)
             {
                 Debug.Log("Send to server the petition to put one card in the middle");
                 ActualiceNumberAndColor(indexCard);
-                SendToServerPutCardInMiddle();
+                SendToServerPutCardInMiddle();    
             }
-
+            //if (playerUIs[0].user.cardList[indexCard].cardType != CardType.BlackColorCard && playerUIs[0].user.cardList[indexCard].cardType != CardType.BlackSum4Card)
+            //{
+            //    Debug.Log("Send to server the petition to put one card in the middle");
+            //    ActualiceNumberAndColor(indexCard);
+            //    SendToServerPutCardInMiddle();
+            //}
+            //else if (playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackColorCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackSum4Card)
+            //{
+            //    panelToChooseColors.SetActive(true);
+            //}
+            //else
+            //{
+            //    panelToChooseColors.SetActive(true);
+            //}
             switch (mainManager.actualColor)
             {
                 case 1:
@@ -110,6 +126,7 @@ public class UIManager : MonoBehaviour
                         Debug.Log("Send to server the petition to put one card in the middle");
                         ActualiceNumberAndColor(indexCard);
                         SendToServerPutCardInMiddle();
+                        
                     }
                     break;
                 case 2:
@@ -118,6 +135,8 @@ public class UIManager : MonoBehaviour
                         Debug.Log("Send to server the petition to put one card in the middle");
                         ActualiceNumberAndColor(indexCard);
                         SendToServerPutCardInMiddle();
+                        
+
                     }
                     break;
                 case 3:
@@ -126,6 +145,8 @@ public class UIManager : MonoBehaviour
                         Debug.Log("Send to server the petition to put one card in the middle");
                         ActualiceNumberAndColor(indexCard);
                         SendToServerPutCardInMiddle();
+                        
+
                     }
                     break;
                 case 4:
@@ -139,16 +160,6 @@ public class UIManager : MonoBehaviour
                 default:
                     break;
             }
-            //if (playerUIs[0].user.cardList[indexCard].cardType != CardType.BlackColorCard && playerUIs[0].user.cardList[indexCard].cardType != CardType.BlackSum4Card)
-            //{
-            //    Debug.Log("Send to server the petition to put one card in the middle");
-            //    ActualiceNumberAndColor(indexCard);
-            //    SendToServerPutCardInMiddle();
-            //}
-            //else
-            //{
-            //    panelToChooseColors.SetActive(true);
-            //}
         }
     }
     #endregion
