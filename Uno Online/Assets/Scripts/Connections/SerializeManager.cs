@@ -168,13 +168,14 @@ public class SerializeManager : MonoBehaviour
             writer.Write((int)serverManager.userList[i].userStatus);
         }
     }
-    public void SerializeUNOButtonPressed(UserBase _user)
+    public void SerializeUNOButtonPressed(UserBase _user, int _oneCardUser)
     {
         newStream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(newStream);
 
         writer.Write(15);
         writer.Write(_user.userNumber);
+        writer.Write(_oneCardUser);
     }
     #endregion
 
@@ -516,9 +517,17 @@ public class SerializeManager : MonoBehaviour
     private void DeserializeUNOButtonPressed(BinaryReader _reader, bool _isClient)
     {
         int whichPlayer = _reader.ReadInt32();
-
-        //AQUI DEBERIA COMPROBAR SI EL USUARIO QUE HA PULSADO EL BOTON O SU COMPAÑERO TIENE 1 CARTA
-        //IF(LE QUEDA UNA CARTA) NO HACER NADA, IF(AMBOS TIENEN MAS DE UNA CARTA) SEND 2 CARDS AL USUARIO QUE LE QUEDA 1 CARTA
+        int whichPlayerHasOneCard = _reader.ReadInt32() + 1;
+        //PENALTY TO THE PLAYER WITH 1 CARD
+        if (whichPlayer != whichPlayerHasOneCard)
+        {
+            int numCardsPenalty = 2;
+            for (int i = 0; i < numCardsPenalty; i++)
+            {
+                serverManager.CreateNewRandomCard(whichPlayerHasOneCard);
+                SendData(11, false, serverManager.userList[whichPlayerHasOneCard - 1]);
+            }
+        }
 
         newStream.Flush();
         newStream.Close();
@@ -596,7 +605,7 @@ public class SerializeManager : MonoBehaviour
                 SerializeAllPlayerStatus();
                 break;
             case (15):
-                SerializeUNOButtonPressed(_userToSend);
+                SerializeUNOButtonPressed(_userToSend, _indexCard);
                 break;
         }
 

@@ -34,6 +34,7 @@ public class UIManager : MonoBehaviour
     private int whichPlayer = 0;
     public List<int> positions = new List<int>();
     private int indexCardToSendMiddle = 0;
+    public int whichPlayerHasOneCard = 0;
 
 
     // Start is called before the first frame update
@@ -41,6 +42,7 @@ public class UIManager : MonoBehaviour
     {
         mainManager = GameObject.Find("MainManager").GetComponent<MainManager>();
         SetUsersToBoard();
+        unoButton.interactable = false;
     }
 
     private void Update()
@@ -65,14 +67,15 @@ public class UIManager : MonoBehaviour
             UpdateUIByUsersStates();
             wannaUpdateStates = false;
         }
-        if (mainManager.user.cardList.Count == 1)
+        for (int i = 0; i < mainManager.userList.Count; i++)
         {
-            unoButton.interactable = true;
+            if (mainManager.userList[i].cardList.Count == 1)
+            {
+                unoButton.interactable = true;
+                whichPlayerHasOneCard = i;
+            }
         }
-        else
-        {
-            unoButton.interactable = false;
-        }
+        
     }
 
     #region PetitionsToServer
@@ -88,7 +91,7 @@ public class UIManager : MonoBehaviour
     public void SendToServerUNOPressed()
     {
         Debug.Log("UNO!");
-        mainManager.serializeManager.SendData(15, true, mainManager.user);
+        mainManager.serializeManager.SendData(15, true, mainManager.user, whichPlayerHasOneCard);
         unoButton.interactable = false;
     }
     public void CheckIfCardWithIndexIsValidAndSend(int indexCard)
@@ -455,6 +458,10 @@ public class UIManager : MonoBehaviour
             }
         }
         return 0;
+    }
+    public int GetPlayerWithOneCard()
+    {
+        return whichPlayerHasOneCard;
     }
     private void UpdateUIByUsersStates()
     {
