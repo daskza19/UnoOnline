@@ -1820,7 +1820,7 @@ MonoBehaviour:
     m_HighlightedSprite: {fileID: 21300000, guid: bed0b7ff4bf9c9a4abff092b974f5b5b, type: 3}
     m_PressedSprite: {fileID: 21300000, guid: b68772ab7e40d3a45889bd8758a7d435, type: 3}
     m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 21300000, guid: 1b1d5abe1d1fa974e895b4c52caf15f9, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -3407,6 +3407,7 @@ MonoBehaviour:
   - {fileID: 2796422088385844095, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
   - {fileID: 5427448470303778207, guid: 2e54ebfef7e0da448944660066df1ccd, type: 3}
   mainManager: {fileID: 0}
+  serverManager: {fileID: 0}
   panelToChooseColors: {fileID: 1343470159}
   unoButton: {fileID: 861135871}
   basicCard: {fileID: 8490093365568236278, guid: 92bf0f4b527ad1541abdfcb515c59605, type: 3}
