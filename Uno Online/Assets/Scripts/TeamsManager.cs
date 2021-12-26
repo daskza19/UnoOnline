@@ -104,11 +104,4 @@ public class TeamsManager : MonoBehaviour
         }
     }
 
-    #region CloseGame
-    public void QuitGame()
-    {
-        Application.Quit();
-    }
-    #endregion
-
 }

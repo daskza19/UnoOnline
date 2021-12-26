@@ -155,4 +155,11 @@ public class MainManager : MonoBehaviour
         if(receiveThread!=null) receiveThread.Abort();
     }
     #endregion
+
+    #region CloseGame
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+    #endregion
 }

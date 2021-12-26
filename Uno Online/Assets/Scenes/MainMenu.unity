@@ -377,8 +377,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2130815257}
-        m_TargetAssemblyTypeName: TeamsManager, Assembly-CSharp
+      - m_Target: {fileID: 262466034}
+        m_TargetAssemblyTypeName: MainManager, Assembly-CSharp
         m_MethodName: QuitGame
         m_Mode: 1
         m_Arguments:
