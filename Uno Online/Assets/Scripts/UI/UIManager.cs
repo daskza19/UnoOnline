@@ -35,13 +35,13 @@ public class UIManager : MonoBehaviour
     public bool wannaUpdateStates = false;
     public bool wannaPutCardOnTheMiddle = false;
     private int indexCard = 0;
+    public bool wannaActivateUnoButton = false;
+    public bool activateUnoButton = false;
     public bool wannaUpdateCards = false;
     public bool wannaUpdateCardsOfOnePlayer = false;
     private int whichPlayer = 0;
     public List<int> positions = new List<int>();
     private int indexCardToSendMiddle = 0;
-    public int whichPlayerHasOneCard = 0;
-
 
     // Start is called before the first frame update
     void Start()
@@ -80,15 +80,11 @@ public class UIManager : MonoBehaviour
             UpdateUIByUsersStates();
             wannaUpdateStates = false;
         }
-        for (int i = 0; i < mainManager.userList.Count; i++)
+        if (wannaActivateUnoButton)
         {
-            if (mainManager.userList[i].cardList.Count == 1)
-            {
-                unoButton.interactable = true;
-                whichPlayerHasOneCard = i;
-            }
+            unoButton.interactable = activateUnoButton;
+            wannaActivateUnoButton = false;
         }
-        
     }
 
     #region PetitionsToServer
@@ -104,7 +100,7 @@ public class UIManager : MonoBehaviour
     public void SendToServerUNOPressed()
     {
         Debug.Log("UNO!");
-        mainManager.serializeManager.SendData(15, true, mainManager.user, whichPlayerHasOneCard);
+        mainManager.serializeManager.SendData(15, true, null, mainManager.user.userNumber);
         unoButton.interactable = false;
     }
 
@@ -144,7 +140,6 @@ public class UIManager : MonoBehaviour
 
         return false;
     }
-
     public void CheckIfCardWithIndexIsValidAndSend(int indexCard)
     {
         if (mainManager.user.userStatus == UserStatus.InTurn && mainManager.alreadyPutCardInMiddle == false)
@@ -157,18 +152,33 @@ public class UIManager : MonoBehaviour
                 mainManager.alreadyPutCardInMiddle = true;
                 ActualiceNumberAndColor(indexCard);
                 SendToServerPutCardInMiddle();
+                //Check if one of the players have only one card in this deck. If it is, activate the button
+                if (playerUIs[0].user.cardList.Count == 2)
+                {
+                    mainManager.serializeManager.SendData(16, true, null, 0, true);
+                }
             }
             else if (playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackColorCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackSum4Card)
             {
                 mainManager.alreadyPutCardInMiddle = true;
                 ActualiceNumberAndColor(indexCard);
                 panelToChooseColors.SetActive(true);
+                //Check if one of the players have only one card in this deck. If it is, activate the button
+                if (playerUIs[0].user.cardList.Count == 2)
+                {
+                    mainManager.serializeManager.SendData(16, true, null, 0, true);
+                }
             }
         }
     }
     #endregion
 
     #region ThreadPetitions
+    public void WannaActivateOrNotUNOButton(bool _activate)
+    {
+        wannaActivateUnoButton = true;
+        activateUnoButton = _activate;
+    }
     public void WannaUpdateCardsOfAllPlayers()
     {
         wannaUpdateCards = true;
@@ -467,6 +477,15 @@ public class UIManager : MonoBehaviour
         //Remove the card from the intern card list of the player
         playerUIs[GetPositionOfThePlayer(_playerNumber)].user.cardList.RemoveAt(_indexCard);
         UpdateCardsOfPlayersUI();
+        
+        //for (int i = 0; i < mainManager.userList.Count; i++)
+        //{
+        //    if (mainManager.userList[i].cardList.Count == 1)
+        //    {
+        //        unoButton.interactable = true;
+        //        continue;
+        //    }
+        //}
 
         //Check if the user that put the card on the middle stay with 0 card. If it is, show the final panel and end the match
         if (playerUIs[GetPositionOfThePlayer(_playerNumber)].user.cardList.Count == 0)
@@ -496,11 +515,21 @@ public class UIManager : MonoBehaviour
             StartCoroutine(EndMatch());
         }
     }
-
     private IEnumerator EndMatch()
     {
         yield return new WaitForSeconds(4);
         Application.Quit();
+    }
+
+    private int WhoIsInState(UserStatus _status)
+    {
+        for(int i = 0; i < mainManager.userList.Count; i++)
+        {
+            if (mainManager.userList[i].userStatus == _status) return mainManager.userList[i].userNumber;
+        }
+
+        Debug.Log("No user encountered with this state: " + _status);
+        return 0;
     }
 
     private void ResetIndicesOfCards(int playerNumber)
@@ -520,10 +549,6 @@ public class UIManager : MonoBehaviour
             }
         }
         return 0;
-    }
-    public int GetPlayerWithOneCard()
-    {
-        return whichPlayerHasOneCard;
     }
     private void UpdateUIByUsersStates()
     {

@@ -169,14 +169,21 @@ public class SerializeManager : MonoBehaviour
             writer.Write((int)serverManager.userList[i].userStatus);
         }
     }
-    public void SerializeUNOButtonPressed(UserBase _user, int _oneCardUser)
+    public void SerializeUNOButtonPressed(int _whichUserTapUNOButton)
     {
         newStream = new MemoryStream();
         BinaryWriter writer = new BinaryWriter(newStream);
 
         writer.Write(15);
-        writer.Write(_user.userNumber);
-        writer.Write(_oneCardUser);
+        writer.Write(_whichUserTapUNOButton);
+    }
+    public void SerializeUNOButtonActivate(bool _activate)
+    {
+        newStream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(newStream);
+
+        writer.Write(16);
+        writer.Write(_activate);
     }
     #endregion
 
@@ -238,6 +245,10 @@ public class SerializeManager : MonoBehaviour
             case (15):
                 //The server gets the user that pressed UNO button
                 DeserializeUNOButtonPressed(reader, isClient);
+                break;
+            case (16):
+                //The client has the chance to actualice the interactivity with UNO button
+                DeserializeUNOButtonActivate(reader, isClient);
                 break;
         }
         return whatis;
@@ -397,6 +408,7 @@ public class SerializeManager : MonoBehaviour
         serverManager.CreateNewRandomCard(whichPlayer);
         SendData(11, false, serverManager.userList[whichPlayer-1]); //Send the new card to the users
         serverManager.NextTurn();
+        SendData(16, false, null, 0, false);
         newStream.Flush();
         newStream.Close();
     }
@@ -501,9 +513,13 @@ public class SerializeManager : MonoBehaviour
             //}
 
             serverManager.userList[whichPlayer - 1].cardList.RemoveAt(cardIndex);
-            serverManager.wannaUpdateInfo = true;
+            if (serverManager.userList[whichPlayer - 1].cardList.Count == 1)
+            {
+                serverManager.lastPlayerWithOneCard = whichPlayer;
+            }
             SendData(13, false, serverManager.userList[whichPlayer-1], cardIndex); //After the server actualice the list, send the action to the other clients 
             serverManager.NextTurn();
+            SendData(16, false, null, 0, false);
         }
 
         newStream.Flush();
@@ -534,19 +550,44 @@ public class SerializeManager : MonoBehaviour
     }
     private void DeserializeUNOButtonPressed(BinaryReader _reader, bool _isClient)
     {
-        int whichPlayer = _reader.ReadInt32();
-        int whichPlayerHasOneCard = _reader.ReadInt32() + 1;
-        //PENALTY TO THE PLAYER WITH 1 CARD
-        if (whichPlayer != whichPlayerHasOneCard)
+        int whichPlayerTapUNOButton = _reader.ReadInt32();
+
+        if (_isClient)
         {
-            int numCardsPenalty = 2;
-            for (int i = 0; i < numCardsPenalty; i++)
+            if (clientManager.uiManager != null)
             {
-                serverManager.CreateNewRandomCard(whichPlayerHasOneCard);
-                SendData(11, false, serverManager.userList[whichPlayerHasOneCard - 1]);
+                clientManager.uiManager.unoButton.interactable = false;
             }
         }
+        else
+        {
+            //PENALTY TO THE PLAYER WITH 1 CARD
+            if (whichPlayerTapUNOButton != serverManager.lastPlayerWithOneCard)
+            {
+                int numCardsPenalty = 2;
+                serverManager.SumToOnePlayerCards(numCardsPenalty, serverManager.lastPlayerWithOneCard - 1);
+            }
+            SendData(16, false, null, 0, false);
+        }
 
+        newStream.Flush();
+        newStream.Close();
+    }
+    private void DeserializeUNOButtonActivate(BinaryReader _reader, bool _isClient)
+    {
+        bool activate = _reader.ReadBoolean();
+
+        if (_isClient)
+        {
+            if (clientManager.uiManager != null)
+            {
+                clientManager.uiManager.WannaActivateOrNotUNOButton(activate);
+            }
+        }
+        else
+        {
+            SendData(16, false, null, 0, true);
+        }
         newStream.Flush();
         newStream.Close();
     }
@@ -593,7 +634,7 @@ public class SerializeManager : MonoBehaviour
         }
         return whatis;
     }
-    public void SendData(int _what, bool _isClient, UserBase _userToSend = null, int _indexCard = 0)
+    public void SendData(int _what, bool _isClient, UserBase _userToSend = null, int _indexCard = 0, bool activateUNObutton = false)
     {
         switch (_what)
         {
@@ -632,7 +673,10 @@ public class SerializeManager : MonoBehaviour
                 SerializeAllPlayerStatus();
                 break;
             case (15):
-                SerializeUNOButtonPressed(_userToSend, _indexCard);
+                SerializeUNOButtonPressed(_indexCard);
+                break;
+            case (16):
+                SerializeUNOButtonActivate(activateUNObutton);
                 break;
         }
 

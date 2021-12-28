@@ -19,6 +19,7 @@ public class ServerManager : MonoBehaviour
     public List<UserBase> userList;
 
     [Header("Game Properties")]
+    public int lastPlayerWithOneCard = 0;
     public int actualColor = 4;
     public int actualNumber = 8;
     private float startTime;
@@ -368,92 +369,84 @@ public class ServerManager : MonoBehaviour
         serializeManager.SendData(12, false); //Send all the new lists to all the players
     }
 
-    public void SumToOnePlayerNumberCards(int numberCardsToSum, int whoSum) //WhoSum is number of player
+    public void SumToOnePlayerCards(int numberCardsToSum, int whichPlayer)
     {
         int count = 0;
-        for (int i = 0; i < userList.Count; i++)//Do the loop for all players
+        for (int j = 0; j < numberCardsToSum; j++) //Do the loop x times to get the new Cards
         {
-            if (userList[i] == null || userList[i].userName == "") //If he player is null in the list or has been deleted not sum the cards
-                continue;
+            CardBase _newCard = new CardBase(CardType.None);
 
-            if (userList[i].userNumber != whoSum) //If he player is null in the list or has been deleted not sum the cards
-                continue;
-
-            for (int j = 0; j < numberCardsToSum; j++) //Do the loop x times to get the new Cards
+            //Not following Cards has a normal probability to appear
+            if (randomizerNewCard[count] >= 1 && randomizerNewCard[count] <= 4)
             {
-                CardBase _newCard = new CardBase(CardType.None);
-
-                //Not following Cards has a normal probability to appear
-                if (randomizerNewCard[count] >= 1 && randomizerNewCard[count] <= 4)
-                {
-                    if (randomizerNewCard[count] == 1)
-                        _newCard.cardType = CardType.NotFollowingRed;
-                    else if (randomizerNewCard[count] == 2)
-                        _newCard.cardType = CardType.NotFollowingBlue;
-                    else if (randomizerNewCard[count] == 3)
-                        _newCard.cardType = CardType.NotFollowingGreen;
-                    else if (randomizerNewCard[count] == 4)
-                        _newCard.cardType = CardType.NotFollowingYellow;
-                }
-
-                //Sum Basic Cards has a normal probability to appear
-                else if (randomizerNewCard[count] >= 5 && randomizerNewCard[count] <= 8)
-                {
-                    if (number2NewCard[count] == 1)
-                        number2NewCard[count] = 2;
-                    else
-                        number2NewCard[count] = 4;
-
-                    if (randomizerNewCard[count] == 5)
-                        _newCard.cardType = CardType.SumRed;
-                    else if (randomizerNewCard[count] == 6)
-                        _newCard.cardType = CardType.SumBlue;
-                    else if (randomizerNewCard[count] == 7)
-                        _newCard.cardType = CardType.SumGreen;
-                    else if (randomizerNewCard[count] == 8)
-                        _newCard.cardType = CardType.SumYellow;
-
-                    _newCard.num = number2NewCard[count];
-                }
-
-                //Black Cards has a normal probability to appear
-                else if (randomizerNewCard[count] == 9 || randomizerNewCard[count] == 10)
-                {
-                    _newCard.cardType = CardType.BlackColorCard;
-                }
-                else if (randomizerNewCard[count] == 11)
-                {
-                    if (number2NewCard[count] == 1)
-                        number2NewCard[count] = 2;
-                    else
-                        number2NewCard[count] = 4;
-
-                    _newCard.cardType = CardType.BlackSum4Card;
-                    _newCard.num = number2NewCard[count];
-                }
-
-                //Basic Cards has a double probability to appear
-                else
-                {
-                    if (randomizerNewCard[count] == 12 || randomizerNewCard[count] == 13 || randomizerNewCard[count] == 14)
-                        _newCard.cardType = CardType.RedCard;
-                    else if (randomizerNewCard[count] == 15 || randomizerNewCard[count] == 16 || randomizerNewCard[count] == 17)
-                        _newCard.cardType = CardType.BlueCard;
-                    else if (randomizerNewCard[count] == 18 || randomizerNewCard[count] == 19 || randomizerNewCard[count] == 20)
-                        _newCard.cardType = CardType.GreenCard;
-                    else if (randomizerNewCard[count] == 21 || randomizerNewCard[count] == 22 || randomizerNewCard[count] == 23)
-                        _newCard.cardType = CardType.YellowCard;
-
-                    _newCard.num = numberNewCard[count];
-                }
-                userList[i].cardList.Add(_newCard); //Add the new Card to the user
-                count++;
+                if (randomizerNewCard[count] == 1)
+                    _newCard.cardType = CardType.NotFollowingRed;
+                else if (randomizerNewCard[count] == 2)
+                    _newCard.cardType = CardType.NotFollowingBlue;
+                else if (randomizerNewCard[count] == 3)
+                    _newCard.cardType = CardType.NotFollowingGreen;
+                else if (randomizerNewCard[count] == 4)
+                    _newCard.cardType = CardType.NotFollowingYellow;
             }
+
+            //Sum Basic Cards has a normal probability to appear
+            else if (randomizerNewCard[count] >= 5 && randomizerNewCard[count] <= 8)
+            {
+                if (number2NewCard[count] == 1)
+                    number2NewCard[count] = 2;
+                else
+                    number2NewCard[count] = 4;
+
+                if (randomizerNewCard[count] == 5)
+                    _newCard.cardType = CardType.SumRed;
+                else if (randomizerNewCard[count] == 6)
+                    _newCard.cardType = CardType.SumBlue;
+                else if (randomizerNewCard[count] == 7)
+                    _newCard.cardType = CardType.SumGreen;
+                else if (randomizerNewCard[count] == 8)
+                    _newCard.cardType = CardType.SumYellow;
+
+                _newCard.num = number2NewCard[count];
+            }
+
+            //Black Cards has a normal probability to appear
+            else if (randomizerNewCard[count] == 9 || randomizerNewCard[count] == 10)
+            {
+                _newCard.cardType = CardType.BlackColorCard;
+            }
+            else if (randomizerNewCard[count] == 11)
+            {
+                if (number2NewCard[count] == 1)
+                    number2NewCard[count] = 2;
+                else
+                    number2NewCard[count] = 4;
+
+                _newCard.cardType = CardType.BlackSum4Card;
+                _newCard.num = number2NewCard[count];
+            }
+
+            //Basic Cards has a double probability to appear
+            else
+            {
+                if (randomizerNewCard[count] == 12 || randomizerNewCard[count] == 13 || randomizerNewCard[count] == 14)
+                    _newCard.cardType = CardType.RedCard;
+                else if (randomizerNewCard[count] == 15 || randomizerNewCard[count] == 16 || randomizerNewCard[count] == 17)
+                    _newCard.cardType = CardType.BlueCard;
+                else if (randomizerNewCard[count] == 18 || randomizerNewCard[count] == 19 || randomizerNewCard[count] == 20)
+                    _newCard.cardType = CardType.GreenCard;
+                else if (randomizerNewCard[count] == 21 || randomizerNewCard[count] == 22 || randomizerNewCard[count] == 23)
+                    _newCard.cardType = CardType.YellowCard;
+
+                _newCard.num = numberNewCard[count];
+            }
+            userList[whichPlayer].cardList.Add(_newCard); //Add the new Card to the user
+            count++;
         }
         wannaUpdateInfo = true;
         wannaRandomNumbers = true;
         serializeManager.SendData(12, false); //Send all the new lists to all the players
     }
+
     public void NextTurn()
     {
         WhoIsNext();
@@ -515,6 +508,7 @@ public class ServerManager : MonoBehaviour
         gameProperties[2].text = "Is in game: " + isInGame.ToString();
         gameProperties[3].text = "Player Turn: " + (gameTurn+1).ToString();
         gameProperties[4].text = "Is clockwise: " + isClock.ToString();
+        gameProperties[6].text = "Last Player With One Card: " + lastPlayerWithOneCard.ToString();
     }
     public void PutOneUserDisconnected(int _index)
     {
