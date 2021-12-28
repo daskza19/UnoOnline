@@ -352,14 +352,27 @@ public class SerializeManager : MonoBehaviour
         {
             if (_isClient)
             {
-                clientManager.userList[whichPlayer - 1] = new UserBase("", 0, 15);
                 clientManager.userList[whichPlayer - 1].userStatus = UserStatus.Disconnected;
+                if (clientManager.uiManager != null)
+                {
+                    clientManager.uiManager.WannaUpdateUIFromUserStates();
+                }
             }
             else
             {
-                serverManager.userList[whichPlayer - 1] = new UserBase("", 0, 15);
+                serverManager.userList[whichPlayer - 1] = new UserBase("", whichPlayer, 15);
                 serverManager.userList[whichPlayer - 1].userStatus = UserStatus.Disconnected;
-                SendData(2, false);
+                SendData(5, false, serverManager.userList[whichPlayer - 1]);
+                bool somebodyIsTurn = false;
+                for(int i = 0; i < 4; i++)
+                {
+                    if (serverManager.userList[i].userStatus == UserStatus.InTurn)
+                    {
+                        somebodyIsTurn = true;
+                        continue;
+                    }
+                }
+                if (!somebodyIsTurn) serverManager.NextTurn();
             }
         }
         else
@@ -558,17 +571,26 @@ public class SerializeManager : MonoBehaviour
         else
         {
             byte[] buffer = new byte[2048];
-            int recv = serverManager.newSocket.ReceiveFrom(buffer, ref serverManager.temporalEndPoint);
-            if (recv == 0)
+            try
             {
-                whatis = 1000;
-                return whatis;
+                if(serverManager.temporalEndPoint!= null)
+                {
+                    int recv = serverManager.newSocket.ReceiveFrom(buffer, ref serverManager.temporalEndPoint);
+                    if (recv == 0)
+                    {
+                        whatis = 1000;
+                        return whatis;
+                    }
+                    Debug.Log("Received DATA");
+                    newStream = new MemoryStream(buffer);
+                    whatis = Deserialize(_isClient);
+                }
             }
-            Debug.Log("Received DATA");
-            newStream = new MemoryStream(buffer);
-            whatis = Deserialize(_isClient);
+            catch
+            {
+                Debug.Log("Unnable to receive from a temporalEndPoint :(");
+            }
         }
-
         return whatis;
     }
     public void SendData(int _what, bool _isClient, UserBase _userToSend = null, int _indexCard = 0)

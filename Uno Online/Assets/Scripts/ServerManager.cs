@@ -118,29 +118,41 @@ public class ServerManager : MonoBehaviour
     #region Threads
     private void ReceiveUsersLoop()
     {
-        while (userList.Count < 4 && !CheckAllUsersState(UserStatus.Connected))
+        while (true)
         {
-            whatToDo = serializeManager.ReceiveData(false);
-            wannaUpdateInfo = true;
-        }
-        isInGame = true;
-        Debug.Log("All players DONE!");
-        Thread.Sleep(100);
-        wannaStartTimer = true;
+            while (userList.Count < 4 && !CheckAllUsersState(UserStatus.Connected))
+            {
+                whatToDo = serializeManager.ReceiveData(false);
+                wannaUpdateInfo = true;
+            }
+            isInGame = true;
+            Debug.Log("All players DONE!");
+            Thread.Sleep(100);
+            wannaStartTimer = true;
 
-        serializeManager.SendData(4, false); //Send to the other players that the match is going to start (to change their scenes)
+            serializeManager.SendData(4, false); //Send to the other players that the match is going to start (to change their scenes)
 
-        Thread.Sleep(500);
-        SumToAllPlayerNumberCards(5); //Put the first cards to all the players
+            Thread.Sleep(500);
+            SumToAllPlayerNumberCards(5); //Put the first cards to all the players
 
-        Thread.Sleep(250);
-        WhoIsNext();
-        serializeManager.SendData(14, false);
+            Thread.Sleep(250);
+            WhoIsNext();
+            serializeManager.SendData(14, false);
 
-        while (isInGame) //Start the gameloop
-        {
-            whatToDo = serializeManager.ReceiveData(false);
-            wannaUpdateInfo = true;
+            while (isInGame) //Start the gameloop
+            {
+                if (CheckAllUsersState(UserStatus.Disconnected))
+                {
+                    isInGame = false;
+                    Thread.Sleep(100);
+                    userList.Clear();
+                    temporalEndPoint = (EndPoint)ipep;
+                    sendEnp.Clear();
+                    continue;
+                }
+                whatToDo = serializeManager.ReceiveData(false);
+                wannaUpdateInfo = true;
+            }
         }
     }
     private void CheckUsersLoop()
@@ -161,7 +173,6 @@ public class ServerManager : MonoBehaviour
     public int WhoIsNext()
     {
         //Actual turn is a int that says the player number that is going to be able to do an action
-
         UserBase user = new UserBase("", 0, 15);
         while (user.userStatus==UserStatus.Disconnected)
         {

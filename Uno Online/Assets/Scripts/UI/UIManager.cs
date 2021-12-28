@@ -270,9 +270,9 @@ public class UIManager : MonoBehaviour
     }
     private void UpdateCardsOfPlayersUI()
     {
-        for(int i = 0; i < 4; i++)
+        //First of all, we delete all the GameObjects of the cards
+        for (int i = 0; i < 4; i++)
         {
-            //First of all, we delete all the GameObjects of the cards
             for(int a=0; a< playerUIs[i].cardGOList.Count; a++)
             {
                 Destroy(playerUIs[i].cardGOList[a]);
@@ -280,92 +280,110 @@ public class UIManager : MonoBehaviour
             playerUIs[i].cardGOList.Clear();
         }
 
-        for(int j = 0; j < playerUIs[0].user.cardList.Count; j++)
+        //If the current user view is not null, instantiate the cards
+        if (playerUIs[0].user != null)
         {
-            if (playerUIs[0].user.cardList[j].cardType == CardType.BlackColorCard)
+            for (int j = 0; j < playerUIs[0].user.cardList.Count; j++)
             {
-                GameObject newCard = Instantiate(blackCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[0].cardScroll.transform);
-                newCard.GetComponent<BasicBlackCardUI>().SetCardUI(playerUIs[0].user.cardList[j], 0);
-                playerUIs[0].cardGOList.Add(newCard);
-            }
-            else if (playerUIs[0].user.cardList[j].cardType == CardType.BlackSum4Card)
-            {
-                GameObject newCard = Instantiate(blackCardSum, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[0].cardScroll.transform);
-                newCard.GetComponent<SumBlackCardUI>().SetCardUI(playerUIs[0].user.cardList[j], 0);
-                playerUIs[0].cardGOList.Add(newCard);
-            }
-            else if (playerUIs[0].user.cardList[j].cardType == CardType.NotFollowingBlue ||
-                playerUIs[0].user.cardList[j].cardType == CardType.NotFollowingGreen ||
-                playerUIs[0].user.cardList[j].cardType == CardType.NotFollowingRed ||
-                playerUIs[0].user.cardList[j].cardType == CardType.NotFollowingYellow)
-            {
-                GameObject newCard = Instantiate(notFollowingCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[0].cardScroll.transform);
-                newCard.GetComponent<NotFollowingCardUI>().SetCardUI(playerUIs[0].user.cardList[j], 0);
-                playerUIs[0].cardGOList.Add(newCard);
-            }
-            else if (playerUIs[0].user.cardList[j].cardType == CardType.SumBlue ||
-                playerUIs[0].user.cardList[j].cardType == CardType.SumGreen ||
-                playerUIs[0].user.cardList[j].cardType == CardType.SumRed ||
-                playerUIs[0].user.cardList[j].cardType == CardType.SumYellow)
-            {
-                GameObject newCard = Instantiate(basicCardSum, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[0].cardScroll.transform);
-                newCard.GetComponent<SumNormalCardUI>().SetCardUI(playerUIs[0].user.cardList[j], 0);
-                playerUIs[0].cardGOList.Add(newCard);
-            }
-            else
-            {
-                GameObject newCard = Instantiate(basicCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[0].cardScroll.transform);
-                newCard.GetComponent<NormalCardUI>().SetCardUI(playerUIs[0].user.cardList[j], 0);
-                playerUIs[0].cardGOList.Add(newCard);
+                if (playerUIs[0].user.cardList[j].cardType == CardType.BlackColorCard)
+                {
+                    GameObject newCard = Instantiate(blackCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[0].cardScroll.transform);
+                    newCard.GetComponent<BasicBlackCardUI>().SetCardUI(playerUIs[0].user.cardList[j], 0);
+                    playerUIs[0].cardGOList.Add(newCard);
+                }
+                else if (playerUIs[0].user.cardList[j].cardType == CardType.BlackSum4Card)
+                {
+                    GameObject newCard = Instantiate(blackCardSum, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[0].cardScroll.transform);
+                    newCard.GetComponent<SumBlackCardUI>().SetCardUI(playerUIs[0].user.cardList[j], 0);
+                    playerUIs[0].cardGOList.Add(newCard);
+                }
+                else if (playerUIs[0].user.cardList[j].cardType == CardType.NotFollowingBlue ||
+                    playerUIs[0].user.cardList[j].cardType == CardType.NotFollowingGreen ||
+                    playerUIs[0].user.cardList[j].cardType == CardType.NotFollowingRed ||
+                    playerUIs[0].user.cardList[j].cardType == CardType.NotFollowingYellow)
+                {
+                    GameObject newCard = Instantiate(notFollowingCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[0].cardScroll.transform);
+                    newCard.GetComponent<NotFollowingCardUI>().SetCardUI(playerUIs[0].user.cardList[j], 0);
+                    playerUIs[0].cardGOList.Add(newCard);
+                }
+                else if (playerUIs[0].user.cardList[j].cardType == CardType.SumBlue ||
+                    playerUIs[0].user.cardList[j].cardType == CardType.SumGreen ||
+                    playerUIs[0].user.cardList[j].cardType == CardType.SumRed ||
+                    playerUIs[0].user.cardList[j].cardType == CardType.SumYellow)
+                {
+                    GameObject newCard = Instantiate(basicCardSum, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[0].cardScroll.transform);
+                    newCard.GetComponent<SumNormalCardUI>().SetCardUI(playerUIs[0].user.cardList[j], 0);
+                    playerUIs[0].cardGOList.Add(newCard);
+                }
+                else
+                {
+                    GameObject newCard = Instantiate(basicCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[0].cardScroll.transform);
+                    newCard.GetComponent<NormalCardUI>().SetCardUI(playerUIs[0].user.cardList[j], 0);
+                    playerUIs[0].cardGOList.Add(newCard);
+                }
             }
         }
-        for (int k = 0; k < playerUIs[2].user.cardList.Count; k++)
+
+        //If the other team member of the player view is not null, instantiate the cards
+        if (playerUIs[2].user.userStatus != UserStatus.Disconnected)
         {
-            if (playerUIs[2].user.cardList[k].cardType == CardType.BlackColorCard)
+            for (int k = 0; k < playerUIs[2].user.cardList.Count; k++)
             {
-                GameObject newCard = Instantiate(blackCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[2].cardScroll.transform);
-                newCard.GetComponent<BasicBlackCardUI>().SetCardUI(playerUIs[2].user.cardList[k], 2);
-                playerUIs[2].cardGOList.Add(newCard);
-                newCard.GetComponent<Button>().interactable = false;
-            }
-            else if (playerUIs[2].user.cardList[k].cardType == CardType.BlackSum4Card)
-            {
-                GameObject newCard = Instantiate(blackCardSum, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[2].cardScroll.transform);
-                newCard.GetComponent<SumBlackCardUI>().SetCardUI(playerUIs[2].user.cardList[k], 2);
-                playerUIs[2].cardGOList.Add(newCard);
-                newCard.GetComponent<Button>().interactable = false;
-            }
-            else if (playerUIs[2].user.cardList[k].cardType == CardType.NotFollowingBlue ||
-                playerUIs[2].user.cardList[k].cardType == CardType.NotFollowingGreen ||
-                playerUIs[2].user.cardList[k].cardType == CardType.NotFollowingRed ||
-                playerUIs[2].user.cardList[k].cardType == CardType.NotFollowingYellow)
-            {
-                GameObject newCard = Instantiate(notFollowingCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[2].cardScroll.transform);
-                newCard.GetComponent<NotFollowingCardUI>().SetCardUI(playerUIs[2].user.cardList[k], 2);
-                playerUIs[2].cardGOList.Add(newCard);
-                newCard.GetComponent<Button>().interactable = false;
-            }
-            else if (playerUIs[2].user.cardList[k].cardType == CardType.SumBlue ||
-                playerUIs[2].user.cardList[k].cardType == CardType.SumGreen ||
-                playerUIs[2].user.cardList[k].cardType == CardType.SumRed ||
-                playerUIs[2].user.cardList[k].cardType == CardType.SumYellow)
-            {
-                GameObject newCard = Instantiate(basicCardSum, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[2].cardScroll.transform);
-                newCard.GetComponent<SumNormalCardUI>().SetCardUI(playerUIs[2].user.cardList[k], 2);
-                playerUIs[2].cardGOList.Add(newCard);
-                newCard.GetComponent<Button>().interactable = false;
-            }
-            else
-            {
-                GameObject newCard = Instantiate(basicCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[2].cardScroll.transform);
-                newCard.GetComponent<NormalCardUI>().SetCardUI(playerUIs[2].user.cardList[k], 2);
-                playerUIs[2].cardGOList.Add(newCard);
-                newCard.GetComponent<Button>().interactable = false;
+                if (playerUIs[2].user.cardList[k].cardType == CardType.BlackColorCard)
+                {
+                    GameObject newCard = Instantiate(blackCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[2].cardScroll.transform);
+                    newCard.GetComponent<BasicBlackCardUI>().SetCardUI(playerUIs[2].user.cardList[k], 2);
+                    playerUIs[2].cardGOList.Add(newCard);
+                    newCard.GetComponent<Button>().interactable = false;
+                }
+                else if (playerUIs[2].user.cardList[k].cardType == CardType.BlackSum4Card)
+                {
+                    GameObject newCard = Instantiate(blackCardSum, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[2].cardScroll.transform);
+                    newCard.GetComponent<SumBlackCardUI>().SetCardUI(playerUIs[2].user.cardList[k], 2);
+                    playerUIs[2].cardGOList.Add(newCard);
+                    newCard.GetComponent<Button>().interactable = false;
+                }
+                else if (playerUIs[2].user.cardList[k].cardType == CardType.NotFollowingBlue ||
+                    playerUIs[2].user.cardList[k].cardType == CardType.NotFollowingGreen ||
+                    playerUIs[2].user.cardList[k].cardType == CardType.NotFollowingRed ||
+                    playerUIs[2].user.cardList[k].cardType == CardType.NotFollowingYellow)
+                {
+                    GameObject newCard = Instantiate(notFollowingCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[2].cardScroll.transform);
+                    newCard.GetComponent<NotFollowingCardUI>().SetCardUI(playerUIs[2].user.cardList[k], 2);
+                    playerUIs[2].cardGOList.Add(newCard);
+                    newCard.GetComponent<Button>().interactable = false;
+                }
+                else if (playerUIs[2].user.cardList[k].cardType == CardType.SumBlue ||
+                    playerUIs[2].user.cardList[k].cardType == CardType.SumGreen ||
+                    playerUIs[2].user.cardList[k].cardType == CardType.SumRed ||
+                    playerUIs[2].user.cardList[k].cardType == CardType.SumYellow)
+                {
+                    GameObject newCard = Instantiate(basicCardSum, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[2].cardScroll.transform);
+                    newCard.GetComponent<SumNormalCardUI>().SetCardUI(playerUIs[2].user.cardList[k], 2);
+                    playerUIs[2].cardGOList.Add(newCard);
+                    newCard.GetComponent<Button>().interactable = false;
+                }
+                else
+                {
+                    GameObject newCard = Instantiate(basicCard, new Vector3(0, 0, 0), Quaternion.identity, playerUIs[2].cardScroll.transform);
+                    newCard.GetComponent<NormalCardUI>().SetCardUI(playerUIs[2].user.cardList[k], 2);
+                    playerUIs[2].cardGOList.Add(newCard);
+                    newCard.GetComponent<Button>().interactable = false;
+                }
             }
         }
+
+        //For all the players, change the text of the amount of cards
         for (int z = 0; z < 4; z++)
         {
-            playerUIs[z].countofCards.text = mainManager.userList[positions[z] - 1].cardList.Count.ToString();
+            if(playerUIs[z].user.userStatus != UserStatus.Disconnected)
+            {
+                playerUIs[z].countofCards.text = playerUIs[z].user.cardList.Count.ToString();
+            }
+            else
+            {
+                playerUIs[z].countofCards.text = "0";
+            }
         }
     }
     private void UpdateCardsOfOnePlayerUI(int whichPlayer)
@@ -423,17 +441,22 @@ public class UIManager : MonoBehaviour
     }
     private void PutOneCardOnTheMiddle(int _indexCard, int _playerNumber)
     {
+        //IF the user is null, exit the function
+        if (mainManager.userList[_playerNumber - 1] == null)
+            return;
+
+        //First we clean all the gameobjects from the UI
         for(int i=0;i < middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Count; i++)
         {
             Destroy(middlePosition.GetComponent<ListOfMiddleCards>().listOfCards[i]);
         }
         middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Clear();
-        Debug.Log("Put the new card on the middle: " + mainManager.userList[_playerNumber-1].cardList[_indexCard].cardType.ToString());
 
-
+        //After that, we instantiate the new card on the middle and put in the correct place
         GameObject newCard = InstantiateCard(playerUIs[GetPositionOfThePlayer(_playerNumber)].user.cardList[_indexCard], middlePosition);
         newCard.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
+        //After put the card on the middle, if the player is in a current team view, delete the gamobject from the list
         if (GetPositionOfThePlayer(_playerNumber) == 0 || GetPositionOfThePlayer(_playerNumber) == 2)
         {
             Destroy(playerUIs[GetPositionOfThePlayer(_playerNumber)].cardGOList[_indexCard]);
@@ -441,9 +464,11 @@ public class UIManager : MonoBehaviour
             ResetIndicesOfCards(_playerNumber);
         }
 
+        //Remove the card from the intern card list of the player
         playerUIs[GetPositionOfThePlayer(_playerNumber)].user.cardList.RemoveAt(_indexCard);
         UpdateCardsOfPlayersUI();
 
+        //Check if the user that put the card on the middle stay with 0 card. If it is, show the final panel and end the match
         if (playerUIs[GetPositionOfThePlayer(_playerNumber)].user.cardList.Count == 0)
         {
             for(int z = 0; z < mainManager.userList.Count; z++)
@@ -451,33 +476,21 @@ public class UIManager : MonoBehaviour
                 mainManager.userList[z].userStatus = UserStatus.Waiting;
             }
             turnAnimator.SetInteger("Turn", 0);
-            if(_playerNumber == 0 || _playerNumber == 2)
+            if(_playerNumber == 1 || _playerNumber == 3)
             {
                 endPanel.mainTitle.text = "The winner of this match is... The red team!";
+                endPanel.firstUserImage.sprite = fotosPerfil[mainManager.userList[0].userImage];
+                endPanel.firstUserName.text = mainManager.userList[0].userName;
+                endPanel.secondUserImage.sprite = fotosPerfil[mainManager.userList[2].userImage];
+                endPanel.secondUserName.text = mainManager.userList[2].userName;
             }
             else
             {
                 endPanel.mainTitle.text = "The winner of this match is... The blue team!";
-            }
-            endPanel.firstUserImage.sprite = fotosPerfil[mainManager.userList[_playerNumber - 1].userImage];
-            endPanel.firstUserName.text = mainManager.userList[_playerNumber - 1].userName;
-
-            if(mainManager.userList[_playerNumber + 1] != null)
-            {
-                endPanel.secondUserImage.sprite = fotosPerfil[mainManager.userList[_playerNumber + 1].userImage];
-                endPanel.secondUserName.text = mainManager.userList[_playerNumber + 1].userName;
-            }
-            else
-            {
-                if(mainManager.userList[_playerNumber - 3] == null)
-                {
-                    Debug.Log("This user is null!");
-                }
-                else
-                {
-                    endPanel.secondUserImage.sprite = fotosPerfil[mainManager.userList[_playerNumber - 3].userImage];
-                    endPanel.secondUserName.text = mainManager.userList[_playerNumber - 3].userName;
-                }
+                endPanel.firstUserImage.sprite = fotosPerfil[mainManager.userList[1].userImage];
+                endPanel.firstUserName.text = mainManager.userList[1].userName;
+                endPanel.secondUserImage.sprite = fotosPerfil[mainManager.userList[3].userImage];
+                endPanel.secondUserName.text = mainManager.userList[3].userName;
             }
             endPanel.animator.SetTrigger("EndMatch");
             StartCoroutine(EndMatch());
@@ -514,7 +527,29 @@ public class UIManager : MonoBehaviour
     }
     private void UpdateUIByUsersStates()
     {
-        turnAnimator.SetInteger("Turn", GetPositionOfThePlayer(GetUserInListByStatus(UserStatus.InTurn)+1)+1);
+        int whoIsTurn = 0;
+        for(int z = 0; z < 4;z ++)
+        {
+            if (mainManager.userList[z] != null)
+            {
+                if (mainManager.userList[z].userStatus == UserStatus.InTurn)
+                {
+                    whoIsTurn = mainManager.userList[z].userNumber;
+                }
+                if (mainManager.userList[z].userStatus == UserStatus.Disconnected)
+                {
+                    int pos = GetPositionOfThePlayer(mainManager.userList[z].userNumber);
+                    playerUIs[pos].imagenPerfil.sprite = fotosPerfil[12];
+                    for (int j = 0; j < playerUIs[pos].cardGOList.Count; j++)
+                    {
+                        Destroy(playerUIs[pos].cardGOList[j]);
+                    }
+                    playerUIs[pos].cardGOList.Clear();
+                    playerUIs[pos].countofCards.text = "0";
+                }
+            }
+        }
+        turnAnimator.SetInteger("Turn", GetPositionOfThePlayer(whoIsTurn)+1);
         wannaUpdateCards = true;
     }
     private int GetUserInListByStatus(UserStatus _status)
