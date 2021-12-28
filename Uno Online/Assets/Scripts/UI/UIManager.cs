@@ -143,31 +143,19 @@ public class UIManager : MonoBehaviour
     public void CheckIfCardWithIndexIsValidAndSend(int indexCard)
     {
         if (mainManager.user.userStatus == UserStatus.InTurn && mainManager.alreadyPutCardInMiddle == false)
-        {   
+        {
             indexCardToSendMiddle = indexCard;
-
             if (IsCardValid(playerUIs[0].user.cardList[indexCard]) == true)
             {
-                Debug.Log("Send to server the petition to put one card in the middle");
                 mainManager.alreadyPutCardInMiddle = true;
                 ActualiceNumberAndColor(indexCard);
                 SendToServerPutCardInMiddle();
-                //Check if one of the players have only one card in this deck. If it is, activate the button
-                if (playerUIs[0].user.cardList.Count == 2)
-                {
-                    mainManager.serializeManager.SendData(16, true, null, 0, true);
-                }
             }
             else if (playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackColorCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackSum4Card)
             {
                 mainManager.alreadyPutCardInMiddle = true;
                 ActualiceNumberAndColor(indexCard);
                 panelToChooseColors.SetActive(true);
-                //Check if one of the players have only one card in this deck. If it is, activate the button
-                if (playerUIs[0].user.cardList.Count == 2)
-                {
-                    mainManager.serializeManager.SendData(16, true, null, 0, true);
-                }
             }
         }
     }
@@ -252,6 +240,11 @@ public class UIManager : MonoBehaviour
     public void SendToServerPutCardInMiddle()
     {
         mainManager.serializeManager.SendData(13, true, mainManager.user, indexCardToSendMiddle);
+        //Check if one of the players have only one card in this deck. If it is, activate the button
+        if (playerUIs[0].user.cardList.Count == 2)
+        {
+            mainManager.serializeManager.SendData(16, true, null, 0, true);
+        }
     }
     private void SetUsersToBoard()
     {

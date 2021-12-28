@@ -37,10 +37,6 @@ public class NormalCardUI : CardUI
                 cardColor.color = redColor;
                 numberText.color = redColor;
                 break;
-            case (CardType.BlackColorCard):
-                cardColor.color = blackColor;
-                numberText.color = blackColor;
-                break;
             default:
                 Debug.Log("Card received has NONE type");
                 break;

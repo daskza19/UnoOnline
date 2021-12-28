@@ -69,22 +69,6 @@ public class MainManager : MonoBehaviour
         receiveThread.Start();
     }
 
-    public void DevtoolPassScene()
-    {
-        userList.Clear();
-        UserBase _user1 = new UserBase("Manolo", 1, 2, UserStatus.Connected);
-        userList.Add(_user1);
-        UserBase _user2 = new UserBase("Silvino", 2, 4, UserStatus.Connected);
-        userList.Add(_user2);
-        UserBase _user3 = new UserBase("Javi", 3, 6, UserStatus.Connected);
-        userList.Add(_user3);
-        UserBase _user4 = new UserBase("Charlie", 4, 7, UserStatus.Connected);
-        userList.Add(_user4);
-        user = _user4;
-
-        SceneManager.LoadScene("SampleScene");
-    }
-
     public void ReceiveLoop()
     {
         while (true)
@@ -102,10 +86,6 @@ public class MainManager : MonoBehaviour
             {
                 case (2): //The server sent a list of users
                     if (teamsManager != null) teamsManager.UpdateUsersTeams();
-                    else
-                    {
-
-                    }
                     break;
                 case (4): //The server sent the action to load the match scene
                     SceneManager.LoadScene("SampleScene");
