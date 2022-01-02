@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -479,14 +480,16 @@ public class SerializeManager : MonoBehaviour
 
         if (_isClient)
         {
-            clientManager.uiManager.WannaPutCardOnTheMiddle(whichPlayer, cardIndex);
             clientManager.actualColor = _reader.ReadInt32();
             clientManager.actualNumber = _reader.ReadInt32();
+            clientManager.uiManager.WannaPutCardOnTheMiddle(whichPlayer, cardIndex);
         }
         else
         {
             serverManager.actualColor = _reader.ReadInt32();
             serverManager.actualNumber = _reader.ReadInt32();
+
+            Debug.Log("Received this card: " + serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType.ToString() +" , " + serverManager.userList[whichPlayer - 1].cardList[cardIndex].num.ToString());
 
             if (serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingYellow ||
                 serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.NotFollowingRed ||
@@ -495,16 +498,18 @@ public class SerializeManager : MonoBehaviour
             {
                 serverManager.WhoIsNext();
             }
-            
+
+            serverManager.NextTurn();
+
             if (serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumBlue ||
                 serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumRed ||
                 serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumYellow ||
                 serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.SumGreen ||
                 serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.BlackSum4Card)
             {
-                serverManager.SumToOnePlayerCards(serverManager.userList[whichPlayer - 1].cardList[cardIndex].num, serverManager.gameTurn + 1);
-                SendData(11, false, serverManager.userList[serverManager.gameTurn + 1]);
-                Thread.Sleep(50);
+                serverManager.SumToOnePlayerCards(serverManager.userList[whichPlayer - 1].cardList[cardIndex].num, serverManager.gameTurn);
+                //SendData(12, false);
+                //Thread.Sleep(500);
             }
 
             serverManager.userList[whichPlayer - 1].cardList.RemoveAt(cardIndex);
@@ -512,8 +517,14 @@ public class SerializeManager : MonoBehaviour
             {
                 serverManager.lastPlayerWithOneCard = whichPlayer;
             }
+            if (serverManager.userList[whichPlayer - 1].cardList.Count == 0)
+            {
+                for(int i = 0; i < serverManager.userList.Count; i++)
+                {
+                    serverManager.userList[i].userStatus = UserStatus.Disconnected;
+                }
+            }
             SendData(13, false, serverManager.userList[whichPlayer-1], cardIndex); //After the server actualice the list, send the action to the other clients 
-            serverManager.NextTurn();
             SendData(16, false, null, 0, false);
         }
 
@@ -622,9 +633,9 @@ public class SerializeManager : MonoBehaviour
                     whatis = Deserialize(_isClient);
                 }
             }
-            catch
+            catch (Exception exc)
             {
-                Debug.Log("Unnable to receive from a temporalEndPoint :(");
+                Debug.Log("Exception: " + exc.ToString());
             }
         }
         return whatis;

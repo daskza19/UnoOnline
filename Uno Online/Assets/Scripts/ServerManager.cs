@@ -37,6 +37,7 @@ public class ServerManager : MonoBehaviour
     public IPEndPoint ipep;
     public EndPoint temporalEndPoint;
     public List<EndPoint> sendEnp;
+    public List<EndPoint> recuperateList;
     public Thread mainThread;
     public Thread checkThread;
 
@@ -121,7 +122,7 @@ public class ServerManager : MonoBehaviour
     {
         while (true)
         {
-            while (userList.Count < 4 && !CheckAllUsersState(UserStatus.Connected))
+            while (userList.Count < 4 || !CheckAllUsersState(UserStatus.Connected))
             {
                 whatToDo = serializeManager.ReceiveData(false);
                 wannaUpdateInfo = true;
@@ -144,6 +145,7 @@ public class ServerManager : MonoBehaviour
             {
                 if (CheckAllUsersState(UserStatus.Disconnected))
                 {
+                    Debug.Log("Game ended!!");
                     isInGame = false;
                     Thread.Sleep(100);
                     userList.Clear();

@@ -147,12 +147,14 @@ public class UIManager : MonoBehaviour
             indexCardToSendMiddle = indexCard;
             if (IsCardValid(playerUIs[0].user.cardList[indexCard]) == true)
             {
+                Debug.Log("Putted in the middle (normal) this card: " + playerUIs[0].user.cardList[indexCard].cardType.ToString() + " , " + playerUIs[0].user.cardList[indexCard].num.ToString());
                 mainManager.alreadyPutCardInMiddle = true;
                 ActualiceNumberAndColor(indexCard);
                 SendToServerPutCardInMiddle();
             }
             else if (playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackColorCard || playerUIs[0].user.cardList[indexCard].cardType == CardType.BlackSum4Card)
             {
+                Debug.Log("Putted in the middle (black) this card: " + playerUIs[0].user.cardList[indexCard].cardType.ToString() + " , " + playerUIs[0].user.cardList[indexCard].num.ToString());
                 mainManager.alreadyPutCardInMiddle = true;
                 ActualiceNumberAndColor(indexCard);
                 panelToChooseColors.SetActive(true);
@@ -454,10 +456,12 @@ public class UIManager : MonoBehaviour
             Destroy(middlePosition.GetComponent<ListOfMiddleCards>().listOfCards[i]);
         }
         middlePosition.GetComponent<ListOfMiddleCards>().listOfCards.Clear();
+        Debug.Log("Cleared all the GO of cards");
 
         //After that, we instantiate the new card on the middle and put in the correct place
         GameObject newCard = InstantiateCard(playerUIs[GetPositionOfThePlayer(_playerNumber)].user.cardList[_indexCard], middlePosition);
         newCard.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+        Debug.Log("New instantiated card in the middle");
 
         //After put the card on the middle, if the player is in a current team view, delete the gamobject from the list
         if (GetPositionOfThePlayer(_playerNumber) == 0 || GetPositionOfThePlayer(_playerNumber) == 2)
@@ -466,20 +470,12 @@ public class UIManager : MonoBehaviour
             playerUIs[GetPositionOfThePlayer(_playerNumber)].cardGOList.RemoveAt(_indexCard);
             ResetIndicesOfCards(_playerNumber);
         }
+        Debug.Log("Deleted card in list");
 
         //Remove the card from the intern card list of the player
         playerUIs[GetPositionOfThePlayer(_playerNumber)].user.cardList.RemoveAt(_indexCard);
         UpdateCardsOfPlayersUI();
         
-        //for (int i = 0; i < mainManager.userList.Count; i++)
-        //{
-        //    if (mainManager.userList[i].cardList.Count == 1)
-        //    {
-        //        unoButton.interactable = true;
-        //        continue;
-        //    }
-        //}
-
         //Check if the user that put the card on the middle stay with 0 card. If it is, show the final panel and end the match
         if (playerUIs[GetPositionOfThePlayer(_playerNumber)].user.cardList.Count == 0)
         {
