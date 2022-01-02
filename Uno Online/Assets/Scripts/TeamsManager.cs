@@ -22,6 +22,8 @@ public class TeamsManager : MonoBehaviour
     public GameObject userPrefab;
     public GameObject blueTeamScroll;
     public GameObject redTeamScroll;
+    public Animator notificationAnimator;
+    public Text notificationText;
 
     private List<GameObject> userPanels = new List<GameObject>();
 
@@ -35,10 +37,12 @@ public class TeamsManager : MonoBehaviour
     {
         if(nameInput.text == "")
         {
+            DoNotification("The User Name cannot be empty, please put a correct name.");
             Debug.Log("No name entered!");
         }
         else if(passwordInput.text != mainManager.serverPassword)
         {
+            DoNotification("Incorrect password from the server. If you thing the password is correct please quit the app and open it another time.");
             Debug.Log("Incorrect password");
         }
         else
@@ -104,4 +108,9 @@ public class TeamsManager : MonoBehaviour
         }
     }
 
+    private void DoNotification(string notification)
+    {
+        notificationText.text = notification;
+        notificationAnimator.SetTrigger("ServerNotification");
+    }
 }

@@ -88,7 +88,10 @@ public class MainManager : MonoBehaviour
                     if (teamsManager != null) teamsManager.UpdateUsersTeams();
                     break;
                 case (4): //The server sent the action to load the match scene
-                    SceneManager.LoadScene("SampleScene");
+                    if (IsThisUserInList())
+                    {
+                        SceneManager.LoadScene("SampleScene");
+                    }
                     break;
             }
             wannaUpdateInfo = false;
@@ -113,10 +116,30 @@ public class MainManager : MonoBehaviour
     }
 
     #region GameplayFunctions
+    public bool IsThisUserInList()
+    {
+        for(int i = 0; i < userList.Count; i++)
+        {
+            if (user.userID == userList[i].userID) return true;
+        }
+        Debug.Log("The actual user is not in the user list");
+        return false;
+    }
+
     public void SendToServerGetCard()
     {
         Debug.Log("Send to server the petition to get a new card!");
         serializeManager.SendData(10, true, user);
+    }
+
+    public int HowManyUsersState(UserStatus _state)
+    {
+        int count = 0;
+        for (int i = 0; i < userList.Count; i++)
+        {
+            if (userList[i].userStatus == _state) count++;
+        }
+        return count;
     }
     #endregion
 

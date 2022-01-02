@@ -111,6 +111,11 @@ public class ServerManager : MonoBehaviour
             UpdateGameUI();
             wannaUpdateInfo = false;
         }
+
+        if(HowManyUsersState(UserStatus.Disconnected) == 3 && isInGame)
+        {
+            ResetServerProperties();
+        }
     }
     #endregion
 
@@ -144,12 +149,8 @@ public class ServerManager : MonoBehaviour
             {
                 if (CheckAllUsersState(UserStatus.Disconnected))
                 {
-                    Debug.Log("Game ended!!");
-                    isInGame = false;
+                    ResetServerProperties();
                     Thread.Sleep(100);
-                    userList.Clear();
-                    temporalEndPoint = (EndPoint)ipep;
-                    sendEnp.Clear();
                     continue;
                 }
                 whatToDo = serializeManager.ReceiveData(false);
@@ -186,6 +187,29 @@ public class ServerManager : MonoBehaviour
     #endregion
 
     #region Utilities
+    private void ResetServerProperties()
+    {
+        actualColor = 0;
+        actualNumber = 0;
+        isClock = true;
+        isInGame = false;
+        userList.Clear();
+        temporalEndPoint = (EndPoint)ipep;
+        sendEnp.Clear();
+        wannaUpdateInfo = true;
+    }
+    public int HowManyUsersState(UserStatus _state)
+    {
+        int count = 0;
+        for(int i = 0; i < userList.Count; i++)
+        {
+            if (userList[i] != null)
+            {
+                if (userList[i].userStatus == _state) count++;
+            }
+        }
+        return count;
+    }
     public int WhoIsNext()
     {
         //Actual turn is a int that says the player number that is going to be able to do an action
@@ -493,50 +517,62 @@ public class ServerManager : MonoBehaviour
     #region UpdateUI
     public void UpdateUserUI()
     {
-        for(int i = 0; i < userList.Count; i++)
+        if (userList.Count == 0)
         {
-            if (userList[i] != null) playerProperties[i].user = userList[i];
-            if (userList[i].userStatus == UserStatus.Disconnected)
+            for (int i = 0; i < 4; i++)
             {
                 PutOneUserDisconnected(i);
-                continue;
             }
-            playerProperties[i].userName.text = userList[i].userName;
-            playerProperties[i].userImage.sprite = spritesPerfil[userList[i].userImage];
-            playerProperties[i].numberofCards.text = "Number of cards: " + userList[i].cardList.Count.ToString();
-            playerProperties[i].InstantiateNewCard();
-            switch (userList[i].userStatus)
+        }
+        else
+        {
+            for (int i = 0; i < userList.Count; i++)
             {
-                case (UserStatus.Connected):
-                    playerProperties[i].userStatus.text = "CONNECTED";
-                    playerProperties[i].userStatus.color = Color.green;
-                    break;
-                case (UserStatus.Ready):
-                    playerProperties[i].userStatus.text = "READY";
-                    playerProperties[i].userStatus.color = Color.yellow;
-                    break;
-                case (UserStatus.Waiting):
-                    playerProperties[i].userStatus.text = "WAITING";
-                    playerProperties[i].userStatus.color = Color.yellow;
-                    break;
-                case (UserStatus.InTurn):
-                    playerProperties[i].userStatus.text = "IN TURN";
-                    playerProperties[i].userStatus.color = Color.blue;
-                    break;
-                default:
-                    playerProperties[i].userStatus.text = "DISCONNECTED";
-                    playerProperties[i].userStatus.color = Color.green;
-                    break;
+                if (userList[i] != null) playerProperties[i].user = userList[i];
+                if (userList[i].userStatus == UserStatus.Disconnected)
+                {
+                    PutOneUserDisconnected(i);
+                    continue;
+                }
+                playerProperties[i].userName.text = userList[i].userName;
+                playerProperties[i].userImage.sprite = spritesPerfil[userList[i].userImage];
+                playerProperties[i].numberofCards.text = "Number of cards: " + userList[i].cardList.Count.ToString();
+                playerProperties[i].InstantiateNewCard();
+                switch (userList[i].userStatus)
+                {
+                    case (UserStatus.Connected):
+                        playerProperties[i].userStatus.text = "CONNECTED";
+                        playerProperties[i].userStatus.color = Color.green;
+                        break;
+                    case (UserStatus.Ready):
+                        playerProperties[i].userStatus.text = "READY";
+                        playerProperties[i].userStatus.color = Color.yellow;
+                        break;
+                    case (UserStatus.Waiting):
+                        playerProperties[i].userStatus.text = "WAITING";
+                        playerProperties[i].userStatus.color = Color.yellow;
+                        break;
+                    case (UserStatus.InTurn):
+                        playerProperties[i].userStatus.text = "IN TURN";
+                        playerProperties[i].userStatus.color = Color.blue;
+                        break;
+                    default:
+                        playerProperties[i].userStatus.text = "DISCONNECTED";
+                        playerProperties[i].userStatus.color = Color.green;
+                        break;
+                }
             }
         }
     }
     public void UpdateGameUI()
     {
+        if (!isInGame) gameProperties[5].text = "Match Time: 0:0";
         string actualColorString = "None";
         if (actualColor == 1) actualColorString = "Red";
         if (actualColor == 2) actualColorString = "Blue";
         if (actualColor == 3) actualColorString = "Yellow";
         if (actualColor == 4) actualColorString = "Green";
+        else actualColorString = "None";
         gameProperties[0].text = "Actual Color: " + actualColorString;
         gameProperties[1].text = "Actual Number: " + actualNumber.ToString();
 

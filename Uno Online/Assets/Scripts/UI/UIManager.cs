@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     public MainManager mainManager;
     public ServerManager serverManager;
     public GameObject panelToChooseColors;
+    public GameObject disconnectedPanel;
     public EndPanelContainer endPanel;
     public Button unoButton;
 
@@ -31,7 +32,6 @@ public class UIManager : MonoBehaviour
     public Text colorText;
     public Text numberText;
     public Text alreadyCardMiddle;
-
 
     public bool wannaPutFirstCardOnMiddle = false;
     private CardBase _firstCardToPutMiddle;
@@ -93,6 +93,12 @@ public class UIManager : MonoBehaviour
             unoButton.interactable = activateUnoButton;
             wannaActivateUnoButton = false;
         }
+
+        if(mainManager.HowManyUsersState(UserStatus.Disconnected) == 3)
+        {
+            disconnectedPanel.GetComponent<Animator>().SetTrigger("EndMatch");
+            StartCoroutine(EndMatch());
+        }
     }
 
     #region PetitionsToServer
@@ -115,37 +121,39 @@ public class UIManager : MonoBehaviour
     private bool IsCardValid(CardBase _card)
     {
         //If the card have the same number than the actual
-        if (_card.num == mainManager.actualNumber) return true;
-        switch (mainManager.actualColor)
+        if(_card.cardType != CardType.BlackColorCard && _card.cardType != CardType.BlackSum4Card)
         {
-            case 1:
-                if (_card.cardType == CardType.RedCard || _card.cardType == CardType.NotFollowingRed || _card.cardType == CardType.SumRed)
-                {
-                    return true;
-                }
-                break;
-            case 2:
-                if (_card.cardType == CardType.BlueCard || _card.cardType == CardType.NotFollowingBlue || _card.cardType == CardType.SumBlue)
-                {
-                    return true;
-                }
-                break;
-            case 3:
-                if (_card.cardType == CardType.YellowCard || _card.cardType == CardType.NotFollowingYellow || _card.cardType == CardType.SumYellow)
-                {
-                    return true;
-                }
-                break;
-            case 4:
-                if (_card.cardType == CardType.GreenCard || _card.cardType == CardType.NotFollowingGreen || _card.cardType == CardType.SumGreen)
-                {
-                    return true;
-                }
-                break;
-            default:
-                break;
+            if (_card.num == mainManager.actualNumber) return true;
+            switch (mainManager.actualColor)
+            {
+                case 1:
+                    if (_card.cardType == CardType.RedCard || _card.cardType == CardType.NotFollowingRed || _card.cardType == CardType.SumRed)
+                    {
+                        return true;
+                    }
+                    break;
+                case 2:
+                    if (_card.cardType == CardType.BlueCard || _card.cardType == CardType.NotFollowingBlue || _card.cardType == CardType.SumBlue)
+                    {
+                        return true;
+                    }
+                    break;
+                case 3:
+                    if (_card.cardType == CardType.YellowCard || _card.cardType == CardType.NotFollowingYellow || _card.cardType == CardType.SumYellow)
+                    {
+                        return true;
+                    }
+                    break;
+                case 4:
+                    if (_card.cardType == CardType.GreenCard || _card.cardType == CardType.NotFollowingGreen || _card.cardType == CardType.SumGreen)
+                    {
+                        return true;
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
-
         return false;
     }
     public void CheckIfCardWithIndexIsValidAndSend(int indexCard)
@@ -525,7 +533,7 @@ public class UIManager : MonoBehaviour
     }
     private IEnumerator EndMatch()
     {
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(8);
         Application.Quit();
     }
 
