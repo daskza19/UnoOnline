@@ -39,7 +39,6 @@ public class ServerManager : MonoBehaviour
     public List<EndPoint> sendEnp;
     public List<EndPoint> recuperateList;
     public Thread mainThread;
-    public Thread checkThread;
 
     public bool wannaUpdateInfo = false;
     private bool wannaStartTimer = false;
@@ -71,8 +70,6 @@ public class ServerManager : MonoBehaviour
 
         mainThread = new Thread(ReceiveUsersLoop);
         mainThread.Start();
-        checkThread = new Thread(CheckUsersLoop);
-        checkThread.Start();
     }
     private void Update()
     {
@@ -135,6 +132,8 @@ public class ServerManager : MonoBehaviour
             serializeManager.SendData(4, false); //Send to the other players that the match is going to start (to change their scenes)
 
             Thread.Sleep(500);
+            RandomNewFirstCardInMiddle();
+            Thread.Sleep(250);
             SumToAllPlayerNumberCards(5); //Put the first cards to all the players
 
             Thread.Sleep(250);
@@ -158,17 +157,31 @@ public class ServerManager : MonoBehaviour
             }
         }
     }
-    private void CheckUsersLoop()
+    private void RandomNewFirstCardInMiddle()
     {
-        //while (true)
-        //{
-        //    serializeManager.SendData(7, false);
-        //
-        //    Thread.Sleep(5);
-        //
-        //    whatToDo = serializeManager.ReceiveData(false);
-        //    wannaUpdateInfo = true;
-        //}
+        CardBase cardToSendMiddle = new CardBase(CardType.None, 0);
+
+        if (randomizerNewCard[0] >= 0 && randomizerNewCard[0] < 5)
+            cardToSendMiddle.cardType = CardType.RedCard;
+        else if (randomizerNewCard[4] >= 6 && randomizerNewCard[0] < 11)
+            cardToSendMiddle.cardType = CardType.BlueCard;
+        else if (randomizerNewCard[0] >= 12 && randomizerNewCard[0] < 17)
+            cardToSendMiddle.cardType = CardType.GreenCard;
+        else if (randomizerNewCard[0] >= 18 && randomizerNewCard[0] < 23)
+            cardToSendMiddle.cardType = CardType.YellowCard;
+
+        cardToSendMiddle.num = numberNewCard[0];
+        wannaRandomNumbers = true;
+
+        if (cardToSendMiddle.cardType == CardType.RedCard) actualColor = 1;
+        else if (cardToSendMiddle.cardType == CardType.BlueCard) actualColor = 2;
+        else if (cardToSendMiddle.cardType == CardType.YellowCard) actualColor = 3;
+        else actualColor = 4;
+
+        actualNumber = cardToSendMiddle.num;
+
+        Debug.Log("Randomized first card: " + cardToSendMiddle.cardType.ToString() + " , " + cardToSendMiddle.num.ToString());
+        serializeManager.SendData(17, false, null, 0, false, cardToSendMiddle);
     }
     #endregion
 
@@ -214,6 +227,31 @@ public class ServerManager : MonoBehaviour
         return false;
     }
     public void CreateNewRandomCard(int playerNumber)
+    {
+        userList[playerNumber-1].cardList.Add(NewRandomCard());
+        wannaRandomNumbers = true;
+        wannaUpdateInfo = true;
+    }
+    private CardBase NewRandomCardToMiddle()
+    {
+        CardBase _newCard = new CardBase(CardType.None);
+
+        //Basic Cards has a double probability to appear
+
+        if (randomizerNewCard[0] >= 0 && randomizerNewCard[0] < 5)
+            _newCard.cardType = CardType.RedCard;
+        else if (randomizerNewCard[4] >= 6 && randomizerNewCard[0] < 11)
+            _newCard.cardType = CardType.BlueCard;
+        else if (randomizerNewCard[0] >= 12 && randomizerNewCard[0] < 17)
+            _newCard.cardType = CardType.GreenCard;
+        else if (randomizerNewCard[0] >= 18 && randomizerNewCard[0] < 23)
+            _newCard.cardType = CardType.YellowCard;
+
+        _newCard.num = numberNewCard[0];
+
+        return _newCard;
+    }
+    public CardBase NewRandomCard()
     {
         CardBase _newCard = new CardBase(CardType.None);
 
@@ -282,10 +320,7 @@ public class ServerManager : MonoBehaviour
         }
 
         Debug.Log("Created a new Card: " + _newCard.cardType.ToString() + " with this number: " + _newCard.num);
-
-        userList[playerNumber-1].cardList.Add(_newCard);
-        wannaRandomNumbers = true;
-        wannaUpdateInfo = true;
+        return _newCard;
     }
     public void SumToAllPlayerNumberCards(int numberCardsToSum)
     {
@@ -370,7 +405,6 @@ public class ServerManager : MonoBehaviour
         wannaRandomNumbers = true;
         serializeManager.SendData(12, false); //Send all the new lists to all the players
     }
-
     public void SumToOnePlayerCards(int numberCardsToSum, int whichPlayer)
     {
         int count = 0;
@@ -448,7 +482,6 @@ public class ServerManager : MonoBehaviour
         wannaRandomNumbers = true;
         serializeManager.SendData(12, false); //Send all the new lists to all the players
     }
-
     public void NextTurn()
     {
         WhoIsNext();

@@ -118,10 +118,6 @@ public class MainManager : MonoBehaviour
         Debug.Log("Send to server the petition to get a new card!");
         serializeManager.SendData(10, true, user);
     }
-    public void SendToServerPutCardInMiddle()
-    {
-
-    }
     #endregion
 
 

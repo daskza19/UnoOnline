@@ -185,6 +185,17 @@ public class SerializeManager : MonoBehaviour
         writer.Write(16);
         writer.Write(_activate);
     }
+    public void SerializeNewCardInMiddle(CardBase _card)
+    {
+        newStream = new MemoryStream();
+        BinaryWriter writer = new BinaryWriter(newStream);
+
+        writer.Write(17);
+        writer.Write((int)_card.cardType);
+        writer.Write(_card.num);
+        writer.Write(serverManager.actualColor);
+        writer.Write(serverManager.actualNumber);
+    }
     #endregion
 
     #region Deserialize
@@ -249,6 +260,10 @@ public class SerializeManager : MonoBehaviour
             case (16):
                 //The client has the chance to actualice the interactivity with UNO button
                 DeserializeUNOButtonActivate(reader, isClient);
+                break;
+            case (17):
+                //The client has received the first card to put in the middle
+                DeserializeFirstCardInMiddle(reader, isClient);
                 break;
         }
         return whatis;
@@ -508,8 +523,6 @@ public class SerializeManager : MonoBehaviour
                 serverManager.userList[whichPlayer - 1].cardList[cardIndex].cardType == CardType.BlackSum4Card)
             {
                 serverManager.SumToOnePlayerCards(serverManager.userList[whichPlayer - 1].cardList[cardIndex].num, serverManager.gameTurn);
-                //SendData(12, false);
-                //Thread.Sleep(500);
             }
 
             serverManager.userList[whichPlayer - 1].cardList.RemoveAt(cardIndex);
@@ -597,6 +610,29 @@ public class SerializeManager : MonoBehaviour
         newStream.Flush();
         newStream.Close();
     }
+    private void DeserializeFirstCardInMiddle(BinaryReader _reader, bool _isClient)
+    {
+        if (_isClient)
+        {
+            CardType cardType = (CardType)_reader.ReadInt32();
+            int numCard = _reader.ReadInt32();
+            clientManager.actualColor = _reader.ReadInt32();
+            clientManager.actualNumber = _reader.ReadInt32();
+
+            CardBase _newCard = new CardBase(cardType, numCard);
+
+            Debug.Log("Received first card: " + _newCard.cardType.ToString() + " , " + _newCard.num.ToString());
+            Debug.Log("FIRST TYPE card: " + cardType.ToString() + " , " + numCard.ToString());
+
+            if (clientManager.uiManager != null)
+            {
+                clientManager.uiManager.WannaPutFirstCardMiddle(_newCard);
+            }
+        }
+
+        newStream.Flush();
+        newStream.Close();
+    }
     #endregion
 
     #region SendAndReceive
@@ -640,7 +676,7 @@ public class SerializeManager : MonoBehaviour
         }
         return whatis;
     }
-    public void SendData(int _what, bool _isClient, UserBase _userToSend = null, int _indexCard = 0, bool activateUNObutton = false)
+    public void SendData(int _what, bool _isClient, UserBase _userToSend = null, int _indexCard = 0, bool activateUNObutton = false, CardBase _card = null)
     {
         switch (_what)
         {
@@ -683,6 +719,9 @@ public class SerializeManager : MonoBehaviour
                 break;
             case (16):
                 SerializeUNOButtonActivate(activateUNObutton);
+                break;
+            case (17):
+                SerializeNewCardInMiddle(_card);
                 break;
         }
 

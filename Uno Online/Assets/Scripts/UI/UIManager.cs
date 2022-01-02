@@ -32,6 +32,9 @@ public class UIManager : MonoBehaviour
     public Text numberText;
     public Text alreadyCardMiddle;
 
+
+    public bool wannaPutFirstCardOnMiddle = false;
+    private CardBase _firstCardToPutMiddle;
     public bool wannaUpdateStates = false;
     public bool wannaPutCardOnTheMiddle = false;
     private int indexCard = 0;
@@ -60,6 +63,11 @@ public class UIManager : MonoBehaviour
         numberText.text = mainManager.actualNumber.ToString();
         alreadyCardMiddle.text = mainManager.alreadyPutCardInMiddle.ToString();
 
+        if (wannaPutFirstCardOnMiddle)
+        {
+            PutFirstCardOnMiddle();
+            wannaPutFirstCardOnMiddle = false;
+        }
         if (wannaUpdateCards)
         {
             UpdateCardsOfPlayersUI();
@@ -164,6 +172,11 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region ThreadPetitions
+    public void WannaPutFirstCardMiddle(CardBase _card)
+    {
+        wannaPutFirstCardOnMiddle = true;
+        _firstCardToPutMiddle = _card;
+    }
     public void WannaActivateOrNotUNOButton(bool _activate)
     {
         wannaActivateUnoButton = true;
@@ -247,6 +260,12 @@ public class UIManager : MonoBehaviour
         {
             mainManager.serializeManager.SendData(16, true, null, 0, true);
         }
+    }
+    private void PutFirstCardOnMiddle()
+    {
+        GameObject newCard = InstantiateCard(_firstCardToPutMiddle, middlePosition);
+        newCard.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+        Debug.Log("New instantiated card in the middle");
     }
     private void SetUsersToBoard()
     {
